@@ -2,1107 +2,2244 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Panel — Làng Vui Vẻ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Làng Vui Vẻ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/* Layout idea: full-screen village canvas, floating rounded HUD cards, one big action button, a shop sheet and a phone with apps. */
 :root {
-  --bg: #f3f6fb;
-  --surface: #ffffff;
-  --ink: #1e293b;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
-  --coral: #ff6b6b;
-  --sun: #f59e0b;
-  --green: #10b981;
-  --purple: #8b5cf6;
-  --display: "Baloo 2", "Be Vietnam Pro", sans-serif;
-  --body: "Be Vietnam Pro", system-ui, sans-serif;
+  --ink: #23324a;
+  --muted: #5d6b82;
+  --sun: #ffd23f;
+  --sky: #5ab0ff;
+  --coral: #ff7a6b;
+  --grass: #86cf8e;
+  --card: rgba(255, 255, 255, .94);
+  --line: rgba(35, 50, 74, .14);
+  --display: "Baloo 2", "Be Vietnam Pro", system-ui, sans-serif;
+  --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--body);
-  font-size: 14px;
-  line-height: 1.5;
-}
-.layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 100vh;
-}
-.sidebar {
-  background: #141e30;
-  color: #e2e8f0;
-  padding: 20px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 10px 18px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  margin-bottom: 10px;
-}
-.brand-badge {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ff7a6b, #ffd23f);
-  display: grid;
-  place-items: center;
-  font-family: var(--display);
-  font-weight: 800;
-  color: #1e293b;
-  font-size: 1.2rem;
-}
-.brand h1 {
-  margin: 0;
-  font-family: var(--display);
-  font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.1;
-  color: #fff;
-}
-.brand small {
-  display: block;
-  font-size: .75rem;
-  color: #94a3b8;
-}
-.nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 12px;
-  background: transparent;
-  color: #cbd5e1;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-  transition: background .15s, color .15s;
-}
-.nav-btn:hover { background: rgba(255,255,255,.07); color: #fff; }
-.nav-btn.active { background: var(--primary); color: #fff; }
-.db-pill {
-  margin-top: auto;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(255,255,255,.06);
-  font-size: .78rem;
-  color: #94a3b8;
-  word-break: break-all;
-}
-.db-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  color: #34d399;
-  margin-bottom: 4px;
-}
-.db-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-}
-.main {
-  padding: 24px 28px;
-  max-width: 1280px;
-  width: 100%;
-}
-.topbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-.topbar h2 {
-  margin: 0;
-  font-family: var(--display);
-  font-size: 1.75rem;
-  font-weight: 800;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 22px;
-}
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 16px 18px;
-  box-shadow: 0 2px 8px rgba(15,23,42,.03);
-}
-.stat-card span {
-  display: block;
-  font-size: .8rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-.stat-card b {
-  display: block;
-  font-family: var(--display);
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-top: 2px;
-}
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
-  box-shadow: 0 2px 10px rgba(15,23,42,.03);
-}
-.card h3 {
-  margin: 0 0 14px;
-  font-family: var(--display);
-  font-size: 1.25rem;
-  font-weight: 800;
-}
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 18px;
-}
-label.lbl {
-  display: block;
-  font-size: .82rem;
-  font-weight: 600;
-  color: var(--muted);
-  margin: 10px 0 5px;
-}
-.inp, select, textarea {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  font: inherit;
-  color: var(--ink);
-  background: #fff;
-}
-.inp:focus, select:focus, textarea:focus {
-  outline: 2px solid rgba(59,130,246,.35);
-  border-color: var(--primary);
-}
-.row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.btn {
-  padding: 9px 16px;
-  border-radius: 10px;
-  border: 0;
-  background: var(--primary);
-  color: #fff;
-  font-family: var(--body);
-  font-weight: 600;
-  font-size: .88rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn:hover { background: var(--primary-dark); }
-.btn.green { background: var(--green); }
-.btn.sun { background: var(--sun); color: #fff; }
-.btn.coral { background: var(--coral); }
-.btn.ghost { background: #e2e8f0; color: var(--ink); }
-.btn.sm { padding: 6px 11px; font-size: .8rem; border-radius: 8px; }
-.switch-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: #f8fafc;
-  border: 1px solid var(--line);
-  margin-bottom: 10px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-  vertical-align: middle;
-}
-th {
-  font-size: .78rem;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  color: var(--muted);
-  background: #f8fafc;
-}
-.badge {
-  display: inline-block;
-  padding: 3px 9px;
-  border-radius: 99px;
-  font-size: .75rem;
-  font-weight: 700;
-}
-.badge.online { background: #dcfce7; color: #15803d; }
-.badge.offline { background: #f1f5f9; color: #64748b; }
-.badge.banned { background: #fee2e2; color: #b91c1c; }
-.badge.zone { background: #e0f2fe; color: #0369a1; }
-.section { display: none; }
-.section.active { display: block; }
-#toastBox {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 999;
-}
-.toast {
-  background: #1e293b;
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  box-shadow: 0 10px 25px rgba(0,0,0,.2);
-  animation: fadeIn .2s ease;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { background: var(--grass); color: var(--ink); font-family: var(--body); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+#app { position: fixed; inset: 0; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.hud { position: absolute; display: flex; gap: 8px; align-items: stretch; z-index: 3; }
+.top-left { top: 12px; left: 12px; flex-direction: column; align-items: flex-start; }
+.top-right { top: 12px; right: 12px; flex-direction: column; align-items: flex-end; }
+.title { font-family: var(--display); font-weight: 800; font-size: 1.15rem; line-height: 1; color: #fff; text-shadow: 0 2px 0 rgba(35, 50, 74, .35); padding-left: 4px; }
+.row { display: flex; gap: 8px; }
+.coins, .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 99px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 3px 0 rgba(35, 50, 74, .12); font-family: var(--display); font-weight: 800; font-size: 1.1rem; color: var(--ink); }
+.coin { width: 18px; height: 18px; border-radius: 50%; background: var(--sun); border: 2px solid #e0a800; box-shadow: inset 0 0 0 3px #ffe58a; }
+.pill { cursor: pointer; font-size: 1rem; position: relative; }
+.pill.soft { cursor: default; font-weight: 600; font-family: var(--body); font-size: .85rem; }
+.pill:focus-visible, .emotes button:focus-visible, .sheet button:focus-visible, .phone button:focus-visible, .intro button:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+#bagN { background: var(--coral); color: #fff; border-radius: 99px; min-width: 22px; padding: 0 6px; font-size: .85rem; text-align: center; }
+.phonebtn svg { width: 18px; height: 18px; }
+.notif-badge { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: #ff4757; color: #fff; font-family: var(--body); font-size: .72rem; font-weight: 800; display: grid; place-items: center; border: 2px solid #fff; }
+.notif-badge[hidden] { display: none; }
+#toasts { position: absolute; top: 64px; left: 50%; transform: translateX(-50%); width: min(92%, 420px); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; z-index: 8; }
+.toast { padding: 8px 16px; border-radius: 14px; background: var(--ink); color: #fff; font-size: .9rem; line-height: 1.35; text-align: center; animation: pop 2.6s ease forwards; }
+@keyframes pop { 0% { opacity: 0; transform: translateY(-8px); } 10%, 82% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.emotes { position: absolute; left: 12px; bottom: 72px; display: flex; flex-direction: column; gap: 8px; z-index: 3; }
+.emotes button { padding: 8px 16px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); box-shadow: 0 3px 0 rgba(35, 50, 74, .12); font-family: var(--display); font-weight: 800; font-size: .95rem; color: var(--ink); cursor: pointer; }
+.act { position: absolute; right: 16px; bottom: 72px; width: 96px; height: 96px; border-radius: 50%; border: 4px solid #fff; background: var(--sun); box-shadow: 0 5px 0 #d9a900, 0 10px 24px rgba(35, 50, 74, .25); color: #3a2a00; font-family: var(--display); font-weight: 800; font-size: 1.25rem; line-height: 1.05; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; z-index: 3; padding: 0 6px; }
+.act small { font-family: var(--body); font-weight: 400; font-size: .65rem; opacity: .7; margin-top: 2px; }
+.act:active { transform: translateY(3px); box-shadow: 0 2px 0 #d9a900; }
+.act.reel { background: var(--coral); color: #fff; box-shadow: 0 5px 0 #c9483a; animation: pulse .35s ease-in-out infinite alternate; }
+@keyframes pulse { to { transform: scale(1.08); } }
 
-/* Modal */
-.modal-bg {
-  position: fixed;
-  inset: 0;
-  background: rgba(15,23,42,.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  z-index: 50;
+/* Bottom Main Screen Chat Bar */
+.chat-dock { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); width: min(520px, calc(100vw - 24px)); z-index: 4; display: flex; flex-direction: column; gap: 6px; }
+.chat-feed { max-height: 112px; overflow-y: auto; padding: 8px 12px; border-radius: 16px; background: rgba(25, 36, 54, .76); backdrop-filter: blur(6px); color: #fff; font-size: .82rem; line-height: 1.4; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 4px 16px rgba(0, 0, 0, .18); }
+.chat-feed[hidden] { display: none; }
+.chat-line { word-break: break-word; }
+.chat-line b { color: #ffd23f; font-weight: 700; }
+.chat-line .chat-zone { font-size: .72rem; color: #a7c5eb; margin-right: 4px; }
+.chat-bar { display: flex; align-items: center; gap: 6px; padding: 5px 6px 5px 12px; border-radius: 99px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(35, 50, 74, .18); }
+.chat-toggle { border: 0; background: #eef2f7; color: var(--ink); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; font-size: .85rem; font-weight: 800; }
+.chat-inp { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: .92rem; color: var(--ink); outline: none; user-select: text; -webkit-user-select: text; }
+.chat-send { border: 0; border-radius: 99px; padding: 7px 14px; background: var(--sky); color: #fff; font-family: var(--display); font-weight: 800; font-size: .9rem; cursor: pointer; flex: none; }
+.chat-send:active { transform: scale(.96); }
+
+.modal { position: absolute; inset: 0; z-index: 6; display: flex; align-items: flex-end; justify-content: center; background: rgba(35, 50, 74, .45); }
+.modal[hidden] { display: none; }
+.sheet { width: min(560px, 100%); max-height: 86%; display: flex; flex-direction: column; background: #fff; border-radius: 22px 22px 0 0; box-shadow: 0 -10px 40px rgba(0, 0, 0, .25); }
+@media (min-width: 700px) { .modal { align-items: center; } .sheet { border-radius: 22px; max-height: 80%; } }
+.sheet header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 8px; }
+.sheet h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.5rem; }
+.close { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #eef2f7; font-size: 1.2rem; cursor: pointer; color: var(--ink); }
+.tabs { display: flex; gap: 6px; padding: 0 18px 10px; }
+.tab { flex: 1; padding: 8px 6px; border-radius: 12px; border: 1px solid var(--line); background: #f5f8fb; font-family: var(--display); font-weight: 800; font-size: .95rem; color: var(--muted); cursor: pointer; position: relative; }
+.tab[aria-selected="true"] { background: var(--sky); border-color: var(--sky); color: #fff; }
+.body { overflow-y: auto; padding: 4px 18px 18px; display: grid; gap: 8px; align-content: start; }
+.item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: #f5f8fb; border: 1px solid var(--line); }
+.chip { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 3px solid rgba(35, 50, 74, .18); position: relative; }
+.status-dot { position: absolute; bottom: -2px; right: -2px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; background: #9aa5b4; }
+.status-dot.on { background: #2ed573; }
+.item .name { flex: 1; font-weight: 600; line-height: 1.3; min-width: 0; }
+.item .name small { display: block; font-weight: 400; color: var(--muted); }
+.btn { padding: 8px 12px; border-radius: 12px; border: 0; background: var(--sky); color: #fff; font-family: var(--display); font-weight: 800; font-size: .9rem; cursor: pointer; white-space: nowrap; }
+.btn.sun { background: var(--sun); color: #3a2a00; }
+.btn.ghost { background: #e3e9f1; color: var(--ink); }
+.btn.green { background: #3fae6a; }
+.btn.red { background: #ff5e57; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.empty { margin: 8px 0; color: var(--muted); line-height: 1.5; font-size: .9rem; }
+.sell { width: 100%; padding: 12px; font-size: 1.1rem; }
+
+/* phone */
+.phone { width: min(370px, 94vw); height: min(660px, 92%); display: flex; flex-direction: column; background: #1c2638; border-radius: 38px; padding: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, .45); align-self: center; }
+.pbar { display: flex; justify-content: space-between; padding: 4px 18px 8px; color: #cfe0f5; font-size: .78rem; font-weight: 600; }
+.pscreen { flex: 1; min-height: 0; overflow-y: auto; background: linear-gradient(180deg, #d9f0ff 0%, #f7fbff 55%); border-radius: 26px; padding: 14px; }
+.pnav { display: flex; justify-content: space-between; gap: 6px; padding: 10px 6px 2px; }
+.pnav button { flex: 1; padding: 8px 4px; border-radius: 99px; border: 0; background: #2c3a52; color: #e6f0ff; font-family: var(--body); font-weight: 600; font-size: .8rem; cursor: pointer; }
+.apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 8px; padding-top: 12px; }
+.app { display: flex; flex-direction: column; align-items: center; gap: 6px; border: 0; background: none; cursor: pointer; font-family: var(--body); font-weight: 600; font-size: .78rem; color: var(--ink); padding: 0; position: relative; }
+.app i { width: 62px; height: 62px; border-radius: 18px; display: grid; place-items: center; box-shadow: 0 4px 0 rgba(35, 50, 74, .18); position: relative; }
+.app svg { width: 34px; height: 34px; }
+.ph1 { margin: 0 0 10px; font-family: var(--display); font-weight: 800; font-size: 1.4rem; }
+.pgrid { display: grid; gap: 8px; }
+.card { padding: 12px; border-radius: 16px; background: #fff; border: 1px solid var(--line); }
+.hearts { letter-spacing: 2px; color: #ff5d8f; font-size: .95rem; }
+.hearts .off { color: #cfd8e3; }
+.bar { height: 10px; border-radius: 99px; background: #e3e9f1; overflow: hidden; }
+.bar b { display: block; height: 100%; background: linear-gradient(90deg, #5ab0ff, #3fae6a); border-radius: 99px; }
+.inp { width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); font: inherit; font-size: .95rem; color: var(--ink); background: #fff; user-select: text; -webkit-user-select: text; }
+.inp:focus-visible { outline: 3px solid var(--sky); outline-offset: 1px; }
+.kv { display: flex; justify-content: space-between; padding: 5px 0; font-size: .9rem; border-bottom: 1px dashed var(--line); }
+.kv:last-child { border: 0; }
+.prof { display: flex; gap: 12px; align-items: center; }
+.prof canvas { position: static; width: 96px; height: 112px; border-radius: 16px; background: linear-gradient(180deg, #bfe6ff, #e9f7d8); flex: none; }
+.lbl { font-size: .8rem; color: var(--muted); margin: 8px 0 4px; display: block; font-weight: 700; }
+.ptabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.ptab { flex: 1; padding: 7px 4px; border-radius: 10px; border: 1px solid var(--line); background: #fff; font-family: var(--display); font-weight: 800; font-size: .82rem; color: var(--muted); cursor: pointer; position: relative; }
+.ptab.on { background: var(--sky); border-color: var(--sky); color: #fff; }
+.search-row { display: flex; gap: 6px; margin-bottom: 10px; }
+
+/* Play Together style splash & loading intro */
+#ptg-intro-wrap { position: fixed; inset: 0; z-index: 200; font-family: "Be Vietnam Pro", var(--body); }
+#ptg-intro-wrap[hidden] { display: none; }
+#ptg-splash-studio { position: fixed; inset: 0; background: #ffffff; z-index: 202; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.55s ease, visibility 0.55s ease; }
+.ptg-studio-logo { font-family: var(--display); font-size: 38px; font-weight: 800; color: #2c3e50; letter-spacing: 2px; animation: ptgPopIn 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.ptg-studio-sub { margin-top: 6px; font-size: 13px; font-weight: 800; color: #7f8c8d; letter-spacing: 3px; text-transform: uppercase; opacity: 0; animation: ptgFadeIn 0.6s ease 0.35s forwards; }
+#ptg-intro-screen { position: fixed; inset: 0; z-index: 201; background: linear-gradient(180deg, #4facfe 0%, #00f2fe 65%, #7bed9f 65.5%, #2ed573 100%); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 40px 20px 36px; transition: transform 0.55s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.45s ease; }
+#ptg-intro-screen.hide { opacity: 0; transform: scale(1.07); pointer-events: none; }
+.ptg-cloud { position: absolute; background: rgba(255, 255, 255, 0.86); border-radius: 50px; animation: ptgFloatCloud linear infinite; pointer-events: none; }
+.ptg-cloud::before, .ptg-cloud::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+.ptg-cloud-1 { width: 120px; height: 40px; top: 13%; left: -150px; animation-duration: 22s; }
+.ptg-cloud-1::before { width: 55px; height: 55px; top: -25px; left: 18px; }
+.ptg-cloud-1::after { width: 40px; height: 40px; top: -15px; right: 20px; }
+.ptg-cloud-2 { width: 90px; height: 30px; top: 25%; left: -120px; animation-duration: 30s; animation-delay: 4s; }
+.ptg-cloud-2::before { width: 40px; height: 40px; top: -18px; left: 14px; }
+.ptg-logo-wrapper { margin-top: 6vh; text-align: center; z-index: 2; animation: ptgBounceLogo 2.5s ease-in-out infinite; }
+.ptg-badge { display: inline-block; background: #ff4757; color: #fff; font-size: 13px; font-weight: 900; padding: 4px 14px; border-radius: 20px; border: 3px solid #fff; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15); margin-bottom: 8px; text-transform: uppercase; }
+.ptg-title { margin: 0; font-family: var(--display); font-size: clamp(42px, 8vw, 68px); font-weight: 800; color: #ffdd59; line-height: 1.05; text-transform: uppercase; -webkit-text-stroke: 3px #2f3542; text-shadow: 0 6px 0 #2f3542, 0 10px 20px rgba(0, 0, 0, 0.25); }
+.ptg-title span { display: block; color: #ffffff; font-size: clamp(32px, 6.2vw, 52px); }
+.ptg-bottom { width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.ptg-tip { background: rgba(255, 255, 255, 0.92); color: #2f3542; padding: 8px 18px; border-radius: 20px; font-size: 14px; font-weight: 800; margin-bottom: 14px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12); text-align: center; }
+.ptg-loading-box { width: 100%; background: #2f3542; padding: 5px; border-radius: 30px; box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2); position: relative; }
+.ptg-bar-bg { width: 100%; height: 24px; background: #57606f; border-radius: 20px; overflow: hidden; position: relative; }
+.ptg-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ffdd59, #ffa801); border-radius: 20px; transition: width 0.2s ease; position: relative; }
+.ptg-bar-fill::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.35) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0.35) 75%, transparent 75%, transparent); background-size: 24px 24px; animation: ptgMoveStripes 0.8s linear infinite; }
+.ptg-bar-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 13px; font-weight: 900; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); }
+.ptg-tap-start { display: none; margin-top: 10px; font-family: var(--display); font-size: 22px; font-weight: 800; color: #ffffff; text-transform: uppercase; -webkit-text-stroke: 1.5px #2f3542; text-shadow: 0 4px 0 #2f3542; cursor: pointer; animation: ptgPulseText 1.2s ease-in-out infinite; }
+.ptg-ver { position: absolute; top: 14px; right: 18px; font-size: 12px; font-weight: 800; color: rgba(255, 255, 255, 0.92); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+@keyframes ptgPopIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes ptgFadeIn { to { opacity: 1; } }
+@keyframes ptgFloatCloud { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 300px)); } }
+@keyframes ptgBounceLogo { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+@keyframes ptgMoveStripes { 0% { background-position: 0 0; } 100% { background-position: 24px 0; } }
+@keyframes ptgPulseText { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.82; } }
+
+/* intro, fade, banner */
+.intro { position: absolute; inset: 0; z-index: 9; background: #bfe6ff; transition: opacity .6s ease; }
+.intro[hidden] { display: none; }
+.intro.out { opacity: 0; pointer-events: none; }
+.intro canvas { position: absolute; inset: 0; }
+.skip { position: absolute; top: 14px; right: 14px; z-index: 2; padding: 8px 16px; border-radius: 99px; border: 0; background: rgba(255, 255, 255, .85); font-family: var(--body); font-weight: 600; font-size: .85rem; color: var(--ink); cursor: pointer; }
+.istage { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; padding: 16px; z-index: 1; }
+.icard { width: min(480px, 100%); padding: 22px 22px 18px; border-radius: 24px; background: rgba(255, 255, 255, .95); box-shadow: 0 12px 40px rgba(35, 50, 74, .25); animation: rise .5s ease; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.icard h1 { margin: 0 0 6px; font-family: var(--display); font-weight: 800; font-size: 2.2rem; line-height: 1.05; color: var(--coral); text-wrap: balance; }
+.icard p { margin: 0 0 14px; color: var(--muted); line-height: 1.55; }
+.dots { display: flex; gap: 6px; margin-bottom: 14px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: #d3dce8; }
+.dots i.on { background: var(--coral); width: 22px; border-radius: 99px; }
+.swatches { display: flex; gap: 10px; margin: 8px 0 14px; }
+.sw { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2px var(--line); cursor: pointer; padding: 0; }
+.sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+.go { width: 100%; padding: 13px; border: 0; border-radius: 14px; background: var(--coral); color: #fff; font-family: var(--display); font-weight: 800; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 0 #c9483a; }
+#fade { position: absolute; inset: 0; background: #0b1624; opacity: 0; pointer-events: none; transition: opacity .38s ease; z-index: 7; }
+#fade.on { opacity: 1; }
+#banner { position: absolute; top: 24%; left: 50%; transform: translateX(-50%); z-index: 5; pointer-events: none; font-family: var(--display); font-weight: 800; font-size: clamp(1.8rem, 6vw, 3rem); color: #fff; text-shadow: 0 3px 0 rgba(35, 50, 74, .4), 0 0 24px rgba(35, 50, 74, .35); opacity: 0; white-space: nowrap; }
+#banner.show { animation: ban 2.4s ease forwards; }
+@keyframes ban { 0% { opacity: 0; transform: translate(-50%, 10px); } 15%, 75% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
+@media (max-width: 480px) { .act { width: 84px; height: 84px; font-size: 1.1rem; } .icard h1 { font-size: 1.8rem; } }
+@media (prefers-reduced-motion: reduce) { .toast, #banner.show { animation-duration: 3s; } .act.reel, .icard, .ptg-logo-wrapper, .ptg-tap-start { animation: none; } }
+/* firebase live features */
+#srvBanner { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 6; max-width: min(520px, calc(100vw - 290px)); padding: 6px 16px; border-radius: 99px; background: linear-gradient(90deg, #ff7a6b, #ff9f43); color: #fff; font-family: var(--display); font-weight: 800; font-size: .9rem; box-shadow: 0 4px 14px rgba(255,122,107,.35); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+#srvBanner[hidden] { display: none; }
+#maintOverlay { position: fixed; inset: 0; z-index: 300; background: rgba(28, 38, 56, .92); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+#maintOverlay[hidden] { display: none; }
+.maint-card { max-width: 420px; width: 100%; background: #fff; border-radius: 24px; padding: 26px 22px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.maint-card h2 { margin: 0 0 8px; font-family: var(--display); font-weight: 800; font-size: 1.7rem; color: var(--coral); }
+.maint-card p { margin: 0; color: var(--muted); line-height: 1.55; }
+.mail-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ff4757; margin-left: 4px; vertical-align: middle; }
+@media (max-width: 680px) { #srvBanner { top: 58px; max-width: 92vw; } }
+
+/* Mobile playability and safe-area support */
+:root { --safe-top: env(safe-area-inset-top, 0px); --safe-right: env(safe-area-inset-right, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px); --safe-left: env(safe-area-inset-left, 0px); }
+button, input { touch-action: manipulation; }
+#app { min-height: 100%; }
+.hud.top-left { top: calc(10px + var(--safe-top)); left: calc(10px + var(--safe-left)); }
+.hud.top-right { top: calc(10px + var(--safe-top)); right: calc(10px + var(--safe-right)); }
+.chat-dock { bottom: calc(10px + var(--safe-bottom)); }
+.act { right: calc(14px + var(--safe-right)); bottom: calc(82px + var(--safe-bottom)); touch-action: manipulation; }
+.emotes { left: calc(10px + var(--safe-left)); bottom: calc(82px + var(--safe-bottom)); }
+.modal { padding-bottom: var(--safe-bottom); }
+.sheet { max-height: min(86dvh, 760px); }
+.phone { height: min(660px, 88dvh); max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px); }
+.pscreen, .body, .chat-feed { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+#ptg-intro-screen { padding-top: max(30px, calc(30px + var(--safe-top))); padding-bottom: max(24px, calc(24px + var(--safe-bottom))); }
+#ic, #c { touch-action: none; }
+@media (max-width: 700px) {
+  .title { font-size: .98rem; }
+  .coins, .pill { padding: 6px 10px; font-size: .95rem; gap: 6px; }
+  .pill.soft { font-size: .75rem; }
+  .phonebtn { font-size: .85rem; }
+  .emotes { flex-direction: row; gap: 5px; bottom: calc(72px + var(--safe-bottom)); }
+  .emotes button { padding: 7px 11px; font-size: .82rem; }
+  .act { width: 76px; height: 76px; font-size: 1rem; border-width: 3px; bottom: calc(78px + var(--safe-bottom)); }
+  .act small { font-size: .58rem; }
+  .chat-dock { width: calc(100vw - 16px - var(--safe-left) - var(--safe-right)); bottom: calc(8px + var(--safe-bottom)); gap: 4px; }
+  .chat-feed { max-height: 22dvh; font-size: .76rem; }
+  .chat-bar { padding: 4px 5px 4px 9px; gap: 5px; }
+  .chat-inp { font-size: 16px; min-height: 34px; }
+  .chat-send { padding: 8px 12px; }
+  .chat-toggle { width: 34px; height: 34px; }
+  .sheet { width: 100%; max-height: 88dvh; border-radius: 20px 20px 0 0; }
+  .sheet header { padding: 12px 14px 7px; }
+  .sheet h2 { font-size: 1.3rem; }
+  .body { padding: 4px 12px calc(14px + var(--safe-bottom)); }
+  .tabs { padding: 0 12px 8px; }
+  .tab { font-size: .84rem; padding: 9px 4px; }
+  .item { padding: 9px; gap: 7px; }
+  .btn { padding: 9px 10px; }
+  .phone { width: min(390px, calc(100vw - 20px)); height: min(700px, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px)); border-radius: 30px; padding: 9px; }
+  .pscreen { padding: 11px; border-radius: 22px; }
+  .pnav { padding-bottom: 4px; }
+  .pnav button { min-height: 40px; font-size: .74rem; }
+  .app i { width: 56px; height: 56px; }
+  .ptg-logo-wrapper { margin-top: 3vh; }
+  .ptg-tip { font-size: 12px; padding: 8px 12px; }
+  .ptg-bottom { padding-bottom: 2px; }
 }
-.modal-bg[hidden] { display: none; }
-.modal-box {
-  background: #fff;
-  border-radius: 20px;
-  width: min(540px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 22px;
-  box-shadow: 0 25px 50px rgba(0,0,0,.25);
+@media (max-width: 380px) {
+  .top-left { max-width: 58vw; }
+  .top-right { max-width: 38vw; }
+  .row { gap: 5px; }
+  .coins, .pill { padding: 5px 8px; font-size: .84rem; }
+  .phonebtn { padding: 6px 8px; }
+  .emotes button { padding: 6px 9px; font-size: .76rem; }
+  .act { width: 68px; height: 68px; right: calc(10px + var(--safe-right)); }
 }
-@media (max-width: 820px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; }
-  .brand { border-bottom: 0; margin-bottom: 0; padding-bottom: 6px; }
-  .db-pill { display: none; }
+@media (orientation: landscape) and (max-height: 520px) {
+  .hud.top-left, .hud.top-right { top: calc(6px + var(--safe-top)); }
+  .emotes { bottom: calc(58px + var(--safe-bottom)); }
+  .act { bottom: calc(58px + var(--safe-bottom)); width: 64px; height: 64px; }
+  .chat-dock { width: min(460px, 54vw); bottom: calc(6px + var(--safe-bottom)); }
+  .chat-feed { max-height: 18dvh; }
+  .ptg-intro-screen { padding-top: 12px; padding-bottom: 12px; }
+  .ptg-logo-wrapper { margin-top: 0; }
+  .ptg-title { font-size: 38px; }
+  .ptg-title span { font-size: 30px; }
+  .phone { height: calc(100dvh - 12px); width: min(430px, 70vw); }
 }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+
+
+#touchPad { display:none; position:absolute; z-index:3; left:calc(16px + var(--safe-left)); bottom:calc(94px + var(--safe-bottom)); width:112px; height:112px; border-radius:50%; background:rgba(255,255,255,.28); border:2px solid rgba(255,255,255,.65); box-shadow:0 4px 18px rgba(35,50,74,.18); touch-action:none; user-select:none; -webkit-user-select:none; }
+#touchKnob { position:absolute; width:46px; height:46px; left:31px; top:31px; border-radius:50%; background:rgba(255,255,255,.82); border:2px solid rgba(35,50,74,.22); box-shadow:0 3px 8px rgba(35,50,74,.2); pointer-events:none; }
+@media (pointer:coarse) and (max-width:900px) {
+  #touchPad { display:block; }
+  .emotes { bottom:calc(82px + var(--safe-bottom)); left:calc(140px + var(--safe-left)); }
+}
+@media (orientation:landscape) and (max-height:520px) and (pointer:coarse) {
+  #touchPad { width:92px; height:92px; bottom:calc(68px + var(--safe-bottom)); }
+  #touchKnob { left:24px; top:24px; width:40px; height:40px; }
+  .emotes { left:calc(116px + var(--safe-left)); bottom:calc(64px + var(--safe-bottom)); }
+}
+
 </style>
 </head>
 <body>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-badge">LV</div>
-      <div>
-        <h1>Làng Vui Vẻ</h1>
-        <small>Quản trị Firebase RTDB</small>
-      </div>
+<div id="app">
+  <canvas id="c" aria-label="Khu làng vui vẻ nhìn từ trên cao"></canvas>
+
+  <div class="hud top-left">
+    <div class="title" id="zoneName">Làng Vui Vẻ</div>
+    <div class="row">
+      <div class="coins"><i class="coin"></i><b id="coins">0</b></div>
+      <button class="pill" id="bagBtn" type="button">Balo <span id="bagN">0</span></button>
     </div>
-    <button class="nav-btn active" data-tab="dash">Tổng quan & Sự kiện</button>
-    <button class="nav-btn" data-tab="players">Người chơi</button>
-    <button class="nav-btn" data-tab="codes">Quản lý Giftcode</button>
-    <button class="nav-btn" data-tab="beta">Quản lý Beta Key</button>
-    <button class="nav-btn" data-tab="shop">Giá Tiệm Làng</button>
-    <button class="nav-btn" data-tab="mail">Gửi Thư / Quà</button>
-    <div class="db-pill">
-      <div class="db-status"><span class="db-dot"></span>Đã kết nối RTDB</div>
-      <div>admin-9c62a-default-rtdb</div>
+  </div>
+  <div class="hud top-right">
+    <span class="pill soft" id="clock">Ban ngày</span>
+    <button class="pill phonebtn" id="phoneBtn" type="button" aria-label="Mở điện thoại">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>Điện thoại
+      <span class="notif-badge" id="phoneBadge" hidden>0</span>
+    </button>
+  </div>
+
+  <div id="srvBanner" hidden></div>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="banner"></div>
+
+  <div class="emotes">
+    <button type="button" data-say="Xin chào mọi người!">Chào</button>
+    <button type="button" data-say="Haha, vui quá!">Haha</button>
+    <button type="button" data-say="Tuyệt vời!">Tuyệt</button>
+  </div>
+
+  <div id="touchPad" aria-label="Cần điều khiển di chuyển" role="group"><div id="touchKnob"></div></div>
+  <button class="act" id="act" type="button" tabindex="-1"><span id="actLabel">Vợt</span><small id="actKey">Chạm</small></button>
+
+  <!-- THANH CHAT Ở DƯỚI MÀN HÌNH CHÍNH -->
+  <div class="chat-dock" id="chatDock">
+    <div class="chat-feed" id="chatFeed" hidden></div>
+    <div class="chat-bar">
+      <button class="chat-toggle" id="chatToggle" type="button" title="Mở/thu gọn lịch sử chat">💬</button>
+      <input class="chat-inp" id="chatInp" type="text" maxlength="80" placeholder="Nhắn tin cho mọi người trong làng..." autocomplete="off">
+      <button class="chat-send" id="chatSend" type="button">Gửi</button>
     </div>
-  </aside>
+  </div>
 
-  <main class="main">
-    <div class="topbar">
-      <h2 id="pageTitle">Tổng quan & Sự kiện</h2>
-      <div class="row">
-        <button class="btn ghost" id="refreshBtn" type="button">Làm mới dữ liệu</button>
-      </div>
+  <div class="modal" id="modal" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+      <header><h2 id="mTitle">Balo</h2><button class="close" id="mClose" type="button" aria-label="Đóng">×</button></header>
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div class="body" id="mBody"></div>
     </div>
+  </div>
 
-    <div class="stats-grid">
-      <div class="stat-card"><span>Đang trực tuyến</span><b id="stOnline">0</b></div>
-      <div class="stat-card"><span>Tổng người chơi</span><b id="stTotal">0</b></div>
-      <div class="stat-card"><span>Tổng xu lưu hành</span><b id="stCoins">0</b></div>
-      <div class="stat-card"><span>Giftcode hoạt động</span><b id="stCodes">0</b></div>
+  <div class="modal" id="phoneModal" hidden>
+    <div class="phone" role="dialog" aria-modal="true" aria-label="Điện thoại">
+      <div class="pbar"><span id="pTime">06:00</span><span>Làng Vui</span></div>
+      <div class="pscreen" id="pScreen"></div>
+      <div class="pnav"><button type="button" id="pBack">Quay lại</button><button type="button" id="pHome">Màn hình chính</button><button type="button" id="pClose">Đóng</button></div>
     </div>
+  </div>
 
-    <!-- TAB 1: DASHBOARD & EVENTS -->
-    <div class="section active" id="sec-dash">
-      <div class="grid-2">
-        <div class="card">
-          <h3>Thông báo toàn Server (Banner)</h3>
-          <div class="switch-row">
-            <div>
-              <strong>Hiển thị thông báo trong game</strong>
-              <div style="font-size:.8rem;color:var(--muted)">Hiện thanh thông báo nổi & popup cho mọi người chơi</div>
-            </div>
-            <input type="checkbox" id="annActive" style="width:20px;height:20px;cursor:pointer">
-          </div>
-          <label class="lbl">Nội dung thông báo</label>
-          <input class="inp" id="annText" placeholder="Ví dụ: Sự kiện x2 Xu cuối tuần đang diễn ra!">
-          <div class="row" style="margin-top:14px">
-            <button class="btn" id="saveAnnBtn" type="button">Cập nhật thông báo</button>
-            <button class="btn ghost" id="pushAnnBtn" type="button">Bắn thông báo mới (Popup)</button>
-          </div>
-        </div>
+  <div id="fade"></div>
 
-        <div class="card">
-          <h3>Hệ số Sự kiện & Bảo trì</h3>
-          <div class="grid-2" style="gap:10px">
-            <div>
-              <label class="lbl">Hệ số Xu bán đồ (x)</label>
-              <input class="inp" id="multCoins" type="number" step="0.5" min="0.5" max="20" value="1">
-            </div>
-            <div>
-              <label class="lbl">Hệ số Kinh nghiệm XP (x)</label>
-              <input class="inp" id="multXp" type="number" step="0.5" min="0.5" max="20" value="1">
-            </div>
-          </div>
-          <div class="switch-row" style="margin-top:14px">
-            <div>
-              <strong style="color:var(--coral)">Chế độ bảo trì Server</strong>
-              <div style="font-size:.8rem;color:var(--muted)">Khóa màn hình chơi game và hiện thông báo bảo trì</div>
-            </div>
-            <input type="checkbox" id="maintActive" style="width:20px;height:20px;cursor:pointer">
-          </div>
-          <label class="lbl">Lời nhắn bảo trì</label>
-          <input class="inp" id="maintMsg" value="Server đang bảo trì, vui lòng quay lại sau!">
-          <div class="row" style="margin-top:14px">
-            <button class="btn green" id="saveServerBtn" type="button">Lưu cấu hình Server</button>
-          </div>
-        </div>
-      </div>
+  <div class="intro" id="intro" hidden>
+    <canvas id="ic"></canvas>
+    <button class="skip" id="iSkip" type="button">Bỏ qua</button>
+    <div class="istage"><div class="icard" id="iCard"></div></div>
+  </div>
 
-      <div class="card">
-        <h3>Người chơi đang Online thời gian thực</h3>
-        <div style="overflow-x:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Tên</th>
-                <th>ID</th>
-                <th>Khu vực</th>
-                <th>Tọa độ</th>
-                <th>Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody id="onlineTable"></tbody>
-          </table>
-        </div>
-      </div>
+  <!-- MÀN HÌNH INTRO MỞ ĐẦU KIỂU PLAY TOGETHER -->
+  <div id="ptg-intro-wrap">
+    <div id="ptg-splash-studio">
+      <div class="ptg-studio-logo">ANH PTG</div>
+      <div class="ptg-studio-sub">Interactive Studio</div>
     </div>
 
-    <!-- TAB 2: PLAYERS -->
-    <div class="section" id="sec-players">
-      <div class="card">
-        <div class="row" style="justify-content:space-between;margin-bottom:14px">
-          <h3 style="margin:0">Danh sách người chơi</h3>
-          <input class="inp" id="playerSearch" placeholder="Tìm theo tên, mã bạn bè hoặc ID..." style="max-width:300px">
-        </div>
-        <div style="overflow-x:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Người chơi</th>
-                <th>Cấp / XP</th>
-                <th>Xu</th>
-                <th>Điểm xanh</th>
-                <th>Khu vực</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="playersTable"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    <div id="ptg-intro-screen">
+      <div class="ptg-ver">Ver 1.0.0</div>
+      <div class="ptg-cloud ptg-cloud-1"></div>
+      <div class="ptg-cloud ptg-cloud-2"></div>
 
-    <!-- TAB 3: GIFTCODES -->
-    <div class="section" id="sec-codes">
-      <div class="grid-2">
-        <div class="card">
-          <h3>Tạo / Cập nhật Giftcode</h3>
-          <label class="lbl">Mã Code (Chữ in hoa, không dấu)</label>
-          <input class="inp" id="cCode" placeholder="Ví dụ: TET2026" style="text-transform:uppercase">
-          <div class="grid-2" style="gap:10px">
-            <div>
-              <label class="lbl">Thưởng Xu</label>
-              <input class="inp" id="cCoins" type="number" min="0" value="200">
-            </div>
-            <div>
-              <label class="lbl">Thưởng Điểm xanh</label>
-              <input class="inp" id="cEco" type="number" min="0" value="0">
-            </div>
-          </div>
-          <label class="lbl">Tặng Trang phục / Thú cưng (Tùy chọn)</label>
-          <select id="cItem">
-            <option value="">-- Không tặng trang bị --</option>
-            <option value="hat_bow">Mũ: Nơ hồng</option>
-            <option value="hat_beanie">Mũ: Mũ len đỏ</option>
-            <option value="hat_straw">Mũ: Mũ rơm</option>
-            <option value="hat_cap">Mũ: Mũ lưỡi trai</option>
-            <option value="hat_crown">Mũ: Vương miện</option>
-            <option value="hat_leaf">Mũ: Mũ lá xanh</option>
-            <option value="hat_flower">Mũ: Vòng hoa</option>
-            <option value="sh_sky">Áo: Áo xanh trời</option>
-            <option value="sh_mint">Áo: Áo bạc hà</option>
-            <option value="sh_sun">Áo: Áo nắng</option>
-            <option value="sh_grape">Áo: Áo nho</option>
-            <option value="sh_pink">Áo: Áo hồng</option>
-            <option value="sh_eco">Áo: Áo tái chế</option>
-            <option value="pet_cat">Thú cưng: Mèo cam</option>
-            <option value="pet_dog">Thú cưng: Cún nâu</option>
-            <option value="pet_bunny">Thú cưng: Thỏ trắng</option>
-          </select>
-          <label class="lbl">Mô tả phần thưởng hiển thị cho người chơi</label>
-          <input class="inp" id="cMsg" placeholder="Ví dụ: +200 xu và Vương miện">
-          <div class="row" style="margin-top:14px">
-            <button class="btn green" id="addCodeBtn" type="button">Lưu Giftcode</button>
-          </div>
-        </div>
+      <div class="ptg-logo-wrapper">
+        <div class="ptg-badge">★ Phiên bản mới ★</div>
+        <h1 class="ptg-title">
+          LÀNG
+          <span>VUI VẺ</span>
+        </h1>
+      </div>
 
-        <div class="card">
-          <h3>Danh sách Giftcode trên Firebase</h3>
-          <p style="color:var(--muted);font-size:.82rem;margin-top:0">Các mã mặc định sẵn trong game (XINCHAO, LANGVUI, CAUCA, TAIXANH, BAIBIEN) vẫn hoạt động trừ khi bạn tắt hoặc ghi đè ở đây.</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Mã</th>
-                <th>Phần thưởng</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="codesTable"></tbody>
-          </table>
+      <div class="ptg-bottom">
+        <div class="ptg-tip" id="ptgTipText">💡 Mẹo: Hãy kết bạn và khám phá ngôi làng nhé!</div>
+        <div class="ptg-loading-box" id="ptgLoadingBox">
+          <div class="ptg-bar-bg">
+            <div class="ptg-bar-fill" id="ptgLoadingFill"></div>
+            <div class="ptg-bar-text" id="ptgLoadingPercent">Đang tải dữ liệu... 0%</div>
+          </div>
         </div>
+        <div class="ptg-tap-start" id="ptgStartBtn">▶ CHẠM ĐỂ BẮT ĐẦU ◀</div>
       </div>
     </div>
+  </div>
 
-    <!-- TAB BETA KEYS -->
-    <div class="section" id="sec-beta">
-      <div class="grid-2">
-        <div class="card">
-          <h3>Tạo Beta Key</h3>
-          <label class="lbl">Tên đợt / tên mã</label>
-          <input class="inp" id="bName" placeholder="Ví dụ: Tester đợt 1">
-          <label class="lbl">Beta Key (để trống sẽ tự tạo)</label>
-          <input class="inp" id="bCode" placeholder="Ví dụ: PTG-BETA-2026" style="text-transform:uppercase">
-          <label class="lbl">Số lượt sử dụng tối đa</label>
-          <input class="inp" id="bLimit" type="number" min="1" step="1" value="10">
-          <div class="row" style="margin-top:14px">
-            <button class="btn green" id="addBetaBtn" type="button">Tạo Beta Key</button>
-          </div>
-          <p style="color:var(--muted);font-size:.8rem;margin-bottom:0">Mỗi trình duyệt/thiết bị được tính một lượt khi kích hoạt lần đầu. Có thể tạo số lượt tùy ý.</p>
-        </div>
-        <div class="card">
-          <h3>Danh sách Beta Key</h3>
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr><th>Tên</th><th>Key</th><th>Lượt dùng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-              <tbody id="betaTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: SHOP OVERRIDES -->
-    <div class="section" id="sec-shop">
-      <div class="card">
-        <div class="row" style="justify-content:space-between;margin-bottom:12px">
-          <div>
-            <h3 style="margin:0">Điều chỉnh giá bán Tiệm Làng</h3>
-            <div style="color:var(--muted);font-size:.82rem">Thay đổi giá bán trực tiếp trên Firebase, áp dụng ngay lập tức cho người chơi</div>
-          </div>
-          <button class="btn" id="saveShopBtn" type="button">Lưu bảng giá</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Vật phẩm</th>
-              <th>Loại</th>
-              <th>Giá mặc định</th>
-              <th>Giá hiện tại (Xu)</th>
-            </tr>
-          </thead>
-          <tbody id="shopTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB 5: MAIL -->
-    <div class="section" id="sec-mail">
-      <div class="card" style="max-width:600px">
-        <h3>Gửi Thư & Quà đính kèm qua Hộp thư trong game</h3>
-        <label class="lbl">Người nhận</label>
-        <select id="mailTarget">
-          <option value="ALL">Tất cả người chơi trong database</option>
-        </select>
-        <label class="lbl">Tiêu đề thư</label>
-        <input class="inp" id="mailTitle" value="Quà từ Quản trị viên">
-        <label class="lbl">Nội dung lời nhắn</label>
-        <textarea class="inp" id="mailMsg" rows="3" placeholder="Cảm ơn bạn đã tham gia Làng Vui Vẻ!"></textarea>
-        <div class="grid-2" style="gap:10px">
-          <div>
-            <label class="lbl">Đính kèm Xu</label>
-            <input class="inp" id="mailCoins" type="number" min="0" value="100">
-          </div>
-          <div>
-            <label class="lbl">Đính kèm Điểm xanh</label>
-            <input class="inp" id="mailEco" type="number" min="0" value="0">
-          </div>
-        </div>
-        <label class="lbl">Đính kèm Vật phẩm / Thú cưng</label>
-        <select id="mailItem">
-          <option value="">-- Không đính kèm vật phẩm --</option>
-          <option value="hat_crown">Vương miện</option>
-          <option value="hat_flower">Vòng hoa</option>
-          <option value="hat_leaf">Mũ lá xanh</option>
-          <option value="hat_bow">Nơ hồng</option>
-          <option value="sh_eco">Áo tái chế</option>
-          <option value="pet_cat">Thú cưng: Mèo cam</option>
-          <option value="pet_dog">Thú cưng: Cún nâu</option>
-          <option value="pet_bunny">Thú cưng: Thỏ trắng</option>
-        </select>
-        <div class="row" style="margin-top:16px">
-          <button class="btn sun" id="sendMailBtn" type="button">Gửi thư ngay</button>
-        </div>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- Edit Player Modal -->
-<div class="modal-bg" id="editModal" hidden>
-  <div class="modal-box">
-    <div class="row" style="justify-content:space-between;margin-bottom:10px">
-      <h3 style="margin:0;font-family:var(--display);font-size:1.4rem" id="emTitle">Chỉnh sửa người chơi</h3>
-      <button class="btn ghost sm" id="emClose" type="button">Đóng</button>
-    </div>
-    <div id="emSub" style="font-size:.82rem;color:var(--muted);margin-bottom:12px"></div>
-    <div class="grid-2" style="gap:10px">
-      <div>
-        <label class="lbl">Đặt lại số Xu</label>
-        <input class="inp" id="emCoins" type="number" min="0">
-      </div>
-      <div>
-        <label class="lbl">Đặt lại Điểm xanh</label>
-        <input class="inp" id="emEco" type="number" min="0">
-      </div>
-    </div>
-    <div class="grid-2" style="gap:10px">
-      <div>
-        <label class="lbl">Đặt lại XP</label>
-        <input class="inp" id="emXp" type="number" min="0">
-      </div>
-      <div>
-        <label class="lbl">Tặng ngay trang phục / thú cưng</label>
-        <select id="emGiveItem">
-          <option value="">-- Không --</option>
-          <option value="hat_crown">Vương miện</option>
-          <option value="hat_flower">Vòng hoa</option>
-          <option value="hat_leaf">Mũ lá xanh</option>
-          <option value="sh_eco">Áo tái chế</option>
-          <option value="pet_cat">Mèo cam</option>
-          <option value="pet_dog">Cún nâu</option>
-          <option value="pet_bunny">Thỏ trắng</option>
-        </select>
-      </div>
-    </div>
-    <label class="lbl">Ghi chú gửi tới màn hình người chơi</label>
-    <input class="inp" id="emNote" value="Quản trị viên đã cập nhật dữ liệu của bạn.">
-    <div class="row" style="margin-top:16px;justify-content:space-between">
-      <div class="row">
-        <button class="btn" id="emSaveBtn" type="button">Áp dụng thay đổi</button>
-        <button class="btn coral" id="emBanBtn" type="button">Khóa tài khoản</button>
-      </div>
-      <button class="btn ghost" id="emResetBtn" type="button">Reset Save</button>
+  <div id="maintOverlay" hidden>
+    <div class="maint-card">
+      <h2 id="maintTitle">Thông báo hệ thống</h2>
+      <p id="maintMsg">Server đang bảo trì, vui lòng quay lại sau!</p>
     </div>
   </div>
 </div>
 
-<div id="toastBox"></div>
-
 <script>
 (function () {
   "use strict";
-  var FB_URL = "https://admin-9c62a-default-rtdb.firebaseio.com";
-  var ZONES = { village: "Làng Vui Vẻ", beach: "Bãi biển Vỏ Sò", forest: "Rừng Thì Thầm" };
-  var SHOP_ITEMS = [
-    { id: "hat_bow", name: "Nơ hồng", type: "Mũ", def: 100 },
-    { id: "hat_beanie", name: "Mũ len đỏ", type: "Mũ", def: 120 },
-    { id: "hat_straw", name: "Mũ rơm", type: "Mũ", def: 150 },
-    { id: "hat_cap", name: "Mũ lưỡi trai", type: "Mũ", def: 200 },
-    { id: "hat_crown", name: "Vương miện", type: "Mũ", def: 600 },
-    { id: "sh_sky", name: "Áo xanh trời", type: "Áo", def: 60 },
-    { id: "sh_mint", name: "Áo bạc hà", type: "Áo", def: 60 },
-    { id: "sh_sun", name: "Áo nắng", type: "Áo", def: 60 },
-    { id: "sh_grape", name: "Áo nho", type: "Áo", def: 80 },
-    { id: "sh_pink", name: "Áo hồng", type: "Áo", def: 80 },
-    { id: "pet_cat", name: "Mèo cam", type: "Thú cưng", def: 400 },
-    { id: "pet_dog", name: "Cún nâu", type: "Thú cưng", def: 400 },
-    { id: "pet_bunny", name: "Thỏ trắng", type: "Thú cưng", def: 500 }
+  var cv = document.getElementById("c"), ctx = cv.getContext("2d");
+
+  // ---------- data ----------
+  var HATS = [
+    { id: "hat_bow", name: "Nơ hồng", price: 100, color: "#ff7eb6" },
+    { id: "hat_beanie", name: "Mũ len đỏ", price: 120, color: "#e63946" },
+    { id: "hat_straw", name: "Mũ rơm", price: 150, color: "#e9c46a" },
+    { id: "hat_cap", name: "Mũ lưỡi trai", price: 200, color: "#3a86ff" },
+    { id: "hat_crown", name: "Vương miện", price: 600, color: "#ffd23f" },
+    { id: "hat_leaf", name: "Mũ lá xanh", price: null, color: "#4fa86a", src: "Đổi từ điểm xanh" },
+    { id: "hat_flower", name: "Vòng hoa", price: null, color: "#ff9ec4", src: "Quà từ code" }
   ];
+  var SHIRTS = [
+    { id: "sh_coral", name: "Áo san hô", price: 0, color: "#ff7a6b" },
+    { id: "sh_sky", name: "Áo xanh trời", price: 60, color: "#5ab0ff" },
+    { id: "sh_mint", name: "Áo bạc hà", price: 60, color: "#4ecdc4" },
+    { id: "sh_sun", name: "Áo nắng", price: 60, color: "#ffd23f" },
+    { id: "sh_grape", name: "Áo nho", price: 80, color: "#9b5de5" },
+    { id: "sh_pink", name: "Áo hồng", price: 80, color: "#ff8fab" },
+    { id: "sh_eco", name: "Áo tái chế", price: null, color: "#5bbf7a", src: "Đổi từ điểm xanh" }
+  ];
+  var PETS = [
+    { id: "pet_cat", name: "Mèo cam", price: 400, color: "#f4a259", kind: "cat" },
+    { id: "pet_dog", name: "Cún nâu", price: 400, color: "#d9a066", kind: "dog" },
+    { id: "pet_bunny", name: "Thỏ trắng", price: 500, color: "#ffffff", kind: "bunny" }
+  ];
+  var BUGS_V = [
+    { n: "Bướm trắng", v: 8, w: 34, c: "#ffffff", shape: "butterfly", sp: 42, fly: true },
+    { n: "Bướm cam", v: 12, w: 28, c: "#ff9f43", shape: "butterfly", sp: 46, fly: true },
+    { n: "Bọ rùa", v: 15, w: 24, c: "#e63946", shape: "ladybug", sp: 24, fly: false },
+    { n: "Chuồn chuồn", v: 22, w: 16, c: "#3bb8c9", shape: "dragonfly", sp: 62, fly: true },
+    { n: "Bướm xanh", v: 60, w: 7, c: "#4d8dff", shape: "butterfly", sp: 50, fly: true },
+    { n: "Bọ cánh vàng", v: 120, w: 3, c: "#ffd23f", shape: "beetle", sp: 26, fly: false }
+  ];
+  var BUGS_B = [
+    { n: "Cua đỏ", v: 25, w: 40, c: "#ef4b3f", shape: "crab", sp: 34, fly: false },
+    { n: "Sao biển", v: 40, w: 22, c: "#ff9f43", shape: "star", sp: 6, fly: false },
+    { n: "Cua vàng", v: 70, w: 8, c: "#ffd23f", shape: "crab", sp: 40, fly: false },
+    { n: "Chuồn chuồn", v: 22, w: 14, c: "#3bb8c9", shape: "dragonfly", sp: 62, fly: true }
+  ];
+  var BUGS_F = [
+    { n: "Đom đóm", v: 18, w: 40, c: "#d9f27a", shape: "firefly", sp: 28, fly: true },
+    { n: "Bọ ngựa", v: 35, w: 24, c: "#6cc24a", shape: "mantis", sp: 26, fly: false },
+    { n: "Bướm đêm", v: 50, w: 14, c: "#7b8cf0", shape: "butterfly", sp: 44, fly: true },
+    { n: "Bọ sừng", v: 90, w: 7, c: "#5b3a29", shape: "rhino", sp: 20, fly: false }
+  ];
+  var FISH_V = [
+    { n: "Cá rô", v: 14, w: 30 }, { n: "Cá chép", v: 22, w: 25 }, { n: "Cá vàng", v: 36, w: 18 },
+    { n: "Lươn", v: 28, w: 12 }, { n: "Cá hề", v: 70, w: 8 }, { n: "Cá koi", v: 150, w: 3 },
+    { n: "Chiếc giày cũ", v: 1, w: 4 }
+  ];
+  var FISH_B = [
+    { n: "Cá thu", v: 30, w: 30 }, { n: "Cá ngừ", v: 45, w: 24 }, { n: "Cá nóc", v: 40, w: 15 },
+    { n: "Mực", v: 60, w: 14 }, { n: "Tôm hùm", v: 110, w: 6 }, { n: "Ngọc trai", v: 220, w: 2 },
+    { n: "Chiếc dép rách", v: 1, w: 5 }
+  ];
+  var PICK_F = [{ n: "Nấm đỏ", v: 18, w: 50, c: "#e63946" }, { n: "Nấm vàng", v: 30, w: 35, c: "#ffc107" }, { n: "Nấm xanh", v: 60, w: 15, c: "#3fb6c9" }];
+  var PICK_B = [{ n: "Vỏ sò", v: 15, w: 60, c: "#ffc9d9" }, { n: "Ốc xoắn", v: 25, w: 30, c: "#f4a259" }, { n: "San hô nhỏ", v: 60, w: 10, c: "#ff6b6b" }];
+  var VALUE = {};
+  [BUGS_V, BUGS_B, BUGS_F, FISH_V, FISH_B, PICK_F, PICK_B].forEach(function (l) { l.forEach(function (b) { VALUE[b.n] = b.v; }); });
+  var CODES = {
+    XINCHAO: { coins: 100, msg: "+100 xu" },
+    LANGVUI: { item: "hat_flower", msg: "Vòng hoa" },
+    CAUCA: { inv: { "Cá vàng": 3, "Cá hề": 2 }, msg: "3 Cá vàng và 2 Cá hề" },
+    TAIXANH: { eco: 20, msg: "+20 điểm xanh" },
+    BAIBIEN: { coins: 150, inv: { "Vỏ sò": 3 }, msg: "+150 xu và 3 Vỏ sò" }
+  };
+  var SWAP = [
+    { id: "hat_leaf", cost: 25 },
+    { id: "sh_eco", cost: 15 },
+    { box: true, name: "Hộp quà bí ẩn", cost: 20 }
+  ];
+  var NPC_DEFS = [
+    { id: "na", name: "Bé Na", zone: "village", x: 820, y: 600, shirt: "#ff8fab", hair: "#2b2d42", lines: ["Mình vừa bắt được bướm xanh đó!", "Ao cá hôm nay đông lắm nha.", "Bạn ơi, đội nơ hồng đẹp lắm!"] },
+    { id: "tu", name: "Chú Tư", zone: "village", x: 1000, y: 700, shirt: "#4ecdc4", hair: "#8d6e63", lines: ["Cá koi hiếm lắm, kiên nhẫn nhé.", "Kéo cần khi thấy dấu chấm than.", "Tiệm làng thu mua mọi thứ đó."] },
+    { id: "mai", name: "Cô Mai", zone: "village", x: 700, y: 480, shirt: "#ffd23f", hair: "#5b3a29", lines: ["Trời đẹp quá, đi dạo thôi!", "Bọ cánh vàng bán được nhiều xu.", "Nhớ dẫn thú cưng đi chơi nha."] },
+    { id: "song", name: "Anh Sóng", zone: "beach", x: 520, y: 420, shirt: "#5ab0ff", hair: "#2b2d42", lines: ["Ra cầu tàu câu cá ngừ đi!", "Biển hôm nay êm lắm.", "Ngọc trai hiếm lắm, đừng bỏ cuộc."] },
+    { id: "cua", name: "Bé Cua", zone: "beach", x: 400, y: 640, shirt: "#ff7a6b", hair: "#3a2e39", lines: ["Có cua vàng chạy quanh đây nè!", "Mình nhặt được cả đống vỏ sò.", "Bạn thích ốc xoắn không?"] },
+    { id: "soi", name: "Bác Sồi", zone: "forest", x: 700, y: 420, shirt: "#8d6e63", hair: "#c9c9c9", lines: ["Rừng này có nấm xanh phát sáng.", "Đêm đến đom đóm nhiều lắm.", "Cẩn thận bọ sừng nhé, nó khỏe lắm."] },
+    { id: "nam", name: "Bé Nấm", zone: "forest", x: 950, y: 620, shirt: "#e8604f", hair: "#3a2e39", lines: ["Nấm đỏ ngon lắm, nhưng bán cho tiệm nhé.", "Tối ở đây đẹp như cổ tích.", "Mình ước có thú cưng thỏ."] }
+  ];
+  var ZONE_NAMES = { village: "Làng Vui Vẻ", beach: "Bãi biển Vỏ Sò", forest: "Rừng Thì Thầm" };
 
-  var state = { config: {}, players: {}, online: {}, betaKeys: {} };
-  var editingPid = null;
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function wpick(list) { var t = 0, i; for (i = 0; i < list.length; i++) t += list[i].w; var r = Math.random() * t; for (i = 0; i < list.length; i++) { r -= list[i].w; if (r <= 0) return list[i]; } return list[0]; }
+  function mulberry(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+  function ell(c, x, y, rx, ry) { c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); }
+  function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function distSeg(px, py, ax, ay, bx, by) { var dx = bx - ax, dy = by - ay, l = dx * dx + dy * dy, t = l ? clamp(((px - ax) * dx + (py - ay) * dy) / l, 0, 1) : 0; return Math.hypot(px - (ax + t * dx), py - (ay + t * dy)); }
+  function withCtx(c, fn) { var o = ctx; ctx = c; try { fn(); } finally { ctx = o; } }
+  function inRect(x, y, r) { return x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3]; }
 
-  function $(id) { return document.getElementById(id); }
-  function toast(msg) {
-    var d = document.createElement("div");
-    d.className = "toast";
-    d.textContent = msg;
-    $("toastBox").appendChild(d);
-    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 2800);
+  // ---------- save & firebase social ----------
+  var FB_URL = "https://admin-9c62a-default-rtdb.firebaseio.com";
+  var fbConfig = {
+    announcement: { text: "", active: false, id: 0 },
+    maintenance: { active: false, message: "Server đang bảo trì, vui lòng quay lại sau!" },
+    multipliers: { coins: 1, xp: 1 },
+    codes: {},
+    shopOverrides: {}
+  };
+  var remotePlayers = {};
+  var allDirectory = {};
+  var friendRequests = {};
+  var playerMail = {};
+  var chatMessages = [];
+  var chatExpanded = false;
+  var lastAnnId = 0;
+  var fbSyncTimer = null;
+
+  function defaults() {
+    var code = "LV-"; for (var i = 0; i < 5; i++) code += "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".charAt(Math.floor(Math.random() * 32));
+    var pid = "P-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+    return { pid: pid, name: "Bạn", intro: false, coins: 50, inv: {}, owned: { sh_coral: true }, eq: { hat: null, shirt: "sh_coral", pet: null }, xp: 0, eco: 0, stats: { bugs: 0, fish: 0, picks: 0, recycled: 0, earned: 0 }, friends: {}, playerFriends: {}, codes: {}, visited: { village: true }, fcode: code, joined: Date.now() };
+  }
+  var save = defaults();
+  try {
+    var raw = localStorage.getItem("lang-vui-save");
+    if (raw) {
+      var s0 = JSON.parse(raw);
+      if (s0 && s0.eq && s0.owned) {
+        Object.keys(save).forEach(function (k) { if (s0[k] === undefined) s0[k] = save[k]; });
+        Object.keys(save.stats).forEach(function (k) { if (typeof s0.stats[k] !== "number") s0.stats[k] = 0; });
+        if (!s0.playerFriends || typeof s0.playerFriends !== "object") s0.playerFriends = {};
+        if (!s0.intro && (s0.coins !== 50 || Object.keys(s0.inv || {}).length)) s0.intro = true;
+        save = s0;
+      }
+    }
+  } catch (e) {}
+  function persist() {
+    try { localStorage.setItem("lang-vui-save", JSON.stringify(save)); } catch (e) {}
+    scheduleFbSync();
+  }
+  function scheduleFbSync() {
+    clearTimeout(fbSyncTimer);
+    fbSyncTimer = setTimeout(syncPlayerToFb, 650);
   }
   function fbReq(path, method, data) {
     var opts = { method: method || "GET", headers: { "Content-Type": "application/json" } };
     if (data !== undefined) opts.body = JSON.stringify(data);
-    return fetch(FB_URL + path + ".json", opts).then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
-    });
+    return fetch(FB_URL + path + ".json", opts).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
   }
 
-  // Navigation
-  document.querySelectorAll(".nav-btn").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll(".nav-btn").forEach(function (b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      var tab = btn.getAttribute("data-tab");
-      $("pageTitle").textContent = btn.textContent;
-      document.querySelectorAll(".section").forEach(function (s) { s.classList.remove("active"); });
-      $("sec-" + tab).classList.add("active");
-    });
-  });
-
-  function loadAll() {
-    Promise.all([
-      fbReq("/config").catch(function () { return {}; }),
-      fbReq("/players").catch(function () { return {}; }),
-      fbReq("/online").catch(function () { return {}; }),
-      fbReq("/betaKeys").catch(function () { return {}; })
-    ]).then(function (res) {
-      state.config = res[0] || {};
-      state.players = res[1] || {};
-      state.online = res[2] || {};
-      state.betaKeys = res[3] || {};
-      renderAll();
+  // ---------- Start game without Beta Key ----------
+  function startGameAfterIntro() {
+    if (!save.intro) startIntro(false);
+    else {
+      banner(ZONE_NAMES[Z.id]);
+      toast("Chào mừng trở lại " + ZONE_NAMES[Z.id] + "!");
+    }
+  }
+  function syncPlayerToFb() {
+    if (!save.pid) return;
+    var sh = byId(SHIRTS, save.eq.shirt);
+    var payload = {
+      pid: save.pid,
+      fcode: save.fcode,
+      name: save.name,
+      coins: save.coins,
+      eco: save.eco,
+      xp: save.xp,
+      level: level(),
+      zone: Z ? Z.id : "village",
+      shirt: sh ? sh.color : "#ff7a6b",
+      eq: save.eq,
+      owned: save.owned,
+      inv: save.inv,
+      stats: save.stats,
+      playerFriends: save.playerFriends || {},
+      joined: save.joined,
+      lastSeen: Date.now()
+    };
+    fbReq("/players/" + encodeURIComponent(save.pid), "PATCH", payload);
+  }
+  function syncOnlinePresence() {
+    if (!save.pid || !Z) return;
+    var sh = byId(SHIRTS, save.eq.shirt);
+    fbReq("/online/" + encodeURIComponent(save.pid), "PUT", {
+      pid: save.pid,
+      name: save.name,
+      fcode: save.fcode,
+      zone: Z.id,
+      x: Math.round(P.x),
+      y: Math.round(P.y),
+      face: P.face,
+      shirt: sh ? sh.color : "#ff7a6b",
+      hat: save.eq.hat || null,
+      bubble: P.bubble ? P.bubble.text : "",
+      updatedAt: Date.now()
     });
   }
-
-  function renderAll() {
-    var now = Date.now();
-    var onlineList = Object.keys(state.online).map(function (k) { return state.online[k]; }).filter(function (p) {
-      return p && (now - (p.updatedAt || 0)) < 15000;
-    });
-    var playerList = Object.keys(state.players).map(function (k) { return state.players[k]; }).filter(Boolean);
-    var codesObj = (state.config && state.config.codes) || {};
-    var activeCodes = Object.keys(codesObj).filter(function (k) { return codesObj[k] && codesObj[k].active !== false; });
-
-    var totalCoins = 0;
-    playerList.forEach(function (p) { totalCoins += Number(p.coins || 0); });
-
-    $("stOnline").textContent = onlineList.length;
-    $("stTotal").textContent = playerList.length;
-    $("stCoins").textContent = totalCoins.toLocaleString("vi-VN");
-    $("stCodes").textContent = activeCodes.length;
-
-    // Config fields
-    var ann = state.config.announcement || {};
-    $("annActive").checked = !!ann.active;
-    $("annText").value = ann.text || "";
-
-    var mult = state.config.multipliers || {};
-    $("multCoins").value = mult.coins || 1;
-    $("multXp").value = mult.xp || 1;
-
-    var maint = state.config.maintenance || {};
-    $("maintActive").checked = !!maint.active;
-    $("maintMsg").value = maint.message || "Server đang bảo trì, vui lòng quay lại sau!";
-
-    // Online table
-    var ot = $("onlineTable");
-    ot.innerHTML = "";
-    if (!onlineList.length) {
-      ot.innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center">Chưa có người chơi nào đang online.</td></tr>';
-    } else {
-      onlineList.forEach(function (p) {
-        var tr = document.createElement("tr");
-        tr.innerHTML = '<td><strong>' + esc(p.name || "Bạn") + '</strong></td>' +
-          '<td style="font-family:monospace;font-size:.8rem">' + esc(p.pid || "") + '</td>' +
-          '<td><span class="badge zone">' + esc(ZONES[p.zone] || p.zone) + '</span></td>' +
-          '<td>' + (p.x || 0) + ', ' + (p.y || 0) + '</td>' +
-          '<td><span class="badge online">Đang chơi</span></td>';
-        ot.appendChild(tr);
+  function getItemPrice(it) {
+    if (fbConfig.shopOverrides && typeof fbConfig.shopOverrides[it.id] === "number") return fbConfig.shopOverrides[it.id];
+    return it.price;
+  }
+  function getAllCodes() {
+    var merged = {};
+    Object.keys(CODES).forEach(function (k) { merged[k] = CODES[k]; });
+    if (fbConfig.codes && typeof fbConfig.codes === "object") {
+      Object.keys(fbConfig.codes).forEach(function (k) {
+        var c = fbConfig.codes[k];
+        if (c && c.active !== false) merged[k.toUpperCase()] = c;
+        else delete merged[k.toUpperCase()];
       });
     }
-
-    // Players table & mail selector
-    renderPlayersTable(playerList, onlineList);
-    renderCodesTable(codesObj);
-    renderBetaTable(state.betaKeys || {});
-    renderShopTable(state.config.shopOverrides || {});
+    return merged;
   }
+  function applyServerConfig(cfg) {
+    if (!cfg || typeof cfg !== "object") return;
+    if (cfg.announcement) fbConfig.announcement = cfg.announcement;
+    if (cfg.maintenance) fbConfig.maintenance = cfg.maintenance;
+    if (cfg.multipliers) fbConfig.multipliers = cfg.multipliers;
+    if (cfg.codes) fbConfig.codes = cfg.codes;
+    if (cfg.shopOverrides) fbConfig.shopOverrides = cfg.shopOverrides;
 
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
-
-  function renderPlayersTable(playerList, onlineList) {
-    var onlineMap = {};
-    onlineList.forEach(function (o) { onlineMap[o.pid] = true; });
-    var q = ($("playerSearch").value || "").trim().toLowerCase();
-
-    var pt = $("playersTable");
-    pt.innerHTML = "";
-    var filtered = playerList.filter(function (p) {
-      if (!q) return true;
-      return (p.name || "").toLowerCase().indexOf(q) >= 0 ||
-             (p.pid || "").toLowerCase().indexOf(q) >= 0 ||
-             (p.fcode || "").toLowerCase().indexOf(q) >= 0;
-    });
-
-    if (!filtered.length) {
-      pt.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center">Không tìm thấy người chơi phù hợp.</td></tr>';
+    var sb = $("srvBanner");
+    if (fbConfig.announcement && fbConfig.announcement.active && fbConfig.announcement.text) {
+      sb.textContent = "📢 " + fbConfig.announcement.text;
+      sb.hidden = false;
+      if (fbConfig.announcement.id && fbConfig.announcement.id !== lastAnnId) {
+        lastAnnId = fbConfig.announcement.id;
+        toast("Thông báo: " + fbConfig.announcement.text);
+      }
     } else {
-      filtered.sort(function (a, b) { return (b.lastSeen || 0) - (a.lastSeen || 0); });
-      filtered.forEach(function (p) {
-        var isOn = !!onlineMap[p.pid];
-        var statusHtml = p.banned
-          ? '<span class="badge banned">Đã khóa</span>'
-          : (isOn ? '<span class="badge online">Online</span>' : '<span class="badge offline">Offline</span>');
-        var tr = document.createElement("tr");
-        tr.innerHTML = '<td><strong>' + esc(p.name || "Bạn") + '</strong><div style="font-size:.75rem;color:var(--muted)">' + esc(p.fcode || "") + ' · ' + esc(p.pid || "") + '</div></td>' +
-          '<td>Cấp ' + (p.level || 1) + ' (' + (p.xp || 0) + ' XP)</td>' +
-          '<td><strong>' + Number(p.coins || 0).toLocaleString("vi-VN") + '</strong></td>' +
-          '<td>' + (p.eco || 0) + '</td>' +
-          '<td><span class="badge zone">' + esc(ZONES[p.zone] || p.zone || "village") + '</span></td>' +
-          '<td>' + statusHtml + '</td>' +
-          '<td><button class="btn sm" type="button">Quản lý</button></td>';
-        tr.querySelector("button").addEventListener("click", function () { openEditModal(p); });
-        pt.appendChild(tr);
+      sb.hidden = true;
+    }
+    checkLockScreen();
+  }
+  var adminBanState = { banned: false, reason: "" };
+  function checkLockScreen() {
+    var ov = $("maintOverlay"), mt = $("maintTitle"), mm = $("maintMsg");
+    if (adminBanState.banned) {
+      mt.textContent = "Tài khoản bị tạm khóa";
+      mm.textContent = adminBanState.reason || "Tài khoản của bạn đã bị quản trị viên khóa.";
+      ov.hidden = false;
+    } else if (fbConfig.maintenance && fbConfig.maintenance.active) {
+      mt.textContent = "Server đang bảo trì";
+      mm.textContent = fbConfig.maintenance.message || "Hệ thống đang nâng cấp, vui lòng quay lại sau!";
+      ov.hidden = false;
+    } else {
+      ov.hidden = true;
+    }
+  }
+  function pendingReqCount() {
+    return Object.keys(friendRequests || {}).length;
+  }
+  function updateBadges() {
+    var n = pendingReqCount();
+    var pb = $("phoneBadge");
+    if (pb) {
+      pb.textContent = n;
+      pb.hidden = n <= 0;
+    }
+  }
+  function handleAdminPlayerPatch(pdata) {
+    if (!pdata || typeof pdata !== "object") return;
+    adminBanState.banned = !!pdata.banned;
+    adminBanState.reason = pdata.banReason || "";
+    checkLockScreen();
+
+    // Sync friend requests & accepted friends
+    friendRequests = (pdata.friendRequests && typeof pdata.friendRequests === "object") ? pdata.friendRequests : {};
+    if (pdata.playerFriends && typeof pdata.playerFriends === "object") {
+      var changed = false;
+      Object.keys(pdata.playerFriends).forEach(function (fpid) {
+        if (!save.playerFriends[fpid]) {
+          save.playerFriends[fpid] = pdata.playerFriends[fpid];
+          changed = true;
+        }
       });
+      if (changed) {
+        try { localStorage.setItem("lang-vui-save", JSON.stringify(save)); } catch (e) {}
+      }
+    }
+    updateBadges();
+    if (phoneOpen && (app === "friends" || app === "home")) renderPhone();
+
+    if (pdata.adminCmd && pdata.adminCmd.ts && pdata.adminCmd.ts !== save._lastCmdTs) {
+      save._lastCmdTs = pdata.adminCmd.ts;
+      var cmd = pdata.adminCmd;
+      if (typeof cmd.setCoins === "number") save.coins = Math.max(0, Math.round(cmd.setCoins));
+      if (typeof cmd.addCoins === "number") save.coins = Math.max(0, save.coins + Math.round(cmd.addCoins));
+      if (typeof cmd.setEco === "number") save.eco = Math.max(0, Math.round(cmd.setEco));
+      if (typeof cmd.addEco === "number") save.eco = Math.max(0, save.eco + Math.round(cmd.addEco));
+      if (typeof cmd.setXp === "number") save.xp = Math.max(0, Math.round(cmd.setXp));
+      if (cmd.giveItem) save.owned[cmd.giveItem] = true;
+      if (cmd.giveBagItem) save.inv[cmd.giveBagItem] = (save.inv[cmd.giveBagItem] || 0) + (cmd.giveBagQty || 1);
+      if (cmd.resetSave) {
+        var keepPid = save.pid;
+        save = defaults();
+        save.pid = keepPid;
+        save.intro = true;
+      }
+      if (cmd.note) toast("Admin: " + cmd.note);
+      try { localStorage.setItem("lang-vui-save", JSON.stringify(save)); } catch (e) {}
+      hud();
+      syncPlayerToFb();
+    }
+    if (pdata.mail && typeof pdata.mail === "object") {
+      playerMail = pdata.mail;
+      if (phoneOpen && app === "mail") renderPhone();
+    } else {
+      playerMail = {};
+    }
+  }
+  function refreshDirectory() {
+    return fbReq("/players").then(function (all) {
+      if (all && typeof all === "object") {
+        allDirectory = all;
+      }
+      return allDirectory;
+    });
+  }
+  function fetchChatHistory() {
+    fbReq("/chat").then(function (data) {
+      if (!data || typeof data !== "object") return;
+      var list = Object.keys(data).map(function (k) { return data[k]; }).filter(Boolean);
+      list.sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+      chatMessages = list.slice(-25);
+      renderChatFeed();
+    });
+  }
+  function renderChatFeed() {
+    var feed = $("chatFeed");
+    if (!feed) return;
+    feed.hidden = !chatExpanded || chatMessages.length === 0;
+    if (feed.hidden) return;
+    feed.innerHTML = "";
+    chatMessages.forEach(function (m) {
+      var line = el("div", "chat-line");
+      var zn = ZONE_NAMES[m.zone] ? "[" + ZONE_NAMES[m.zone] + "]" : "";
+      if (zn) line.appendChild(el("span", "chat-zone", zn));
+      line.appendChild(el("b", null, (m.name || "Người chơi") + ": "));
+      line.appendChild(document.createTextNode(m.text || ""));
+      feed.appendChild(line);
+    });
+    feed.scrollTop = feed.scrollHeight;
+  }
+  function sendChatMessage(rawText) {
+    var txt = (rawText || "").trim().slice(0, 80);
+    if (!txt) return;
+    say(txt);
+    var msgObj = {
+      pid: save.pid,
+      name: save.name,
+      zone: Z ? Z.id : "village",
+      text: txt,
+      ts: Date.now()
+    };
+    chatMessages.push(msgObj);
+    if (chatMessages.length > 25) chatMessages.shift();
+    chatExpanded = true;
+    renderChatFeed();
+    syncOnlinePresence();
+    fbReq("/chat", "POST", msgObj);
+  }
+  function initFirebase() {
+    fbReq("/config").then(applyServerConfig);
+    fbReq("/players/" + encodeURIComponent(save.pid)).then(function (pdata) {
+      if (pdata) handleAdminPlayerPatch(pdata);
+      syncPlayerToFb();
+    });
+    refreshDirectory();
+    fetchChatHistory();
+    syncOnlinePresence();
+
+    if (window.EventSource) {
+      try {
+        var esCfg = new EventSource(FB_URL + "/config.json");
+        esCfg.addEventListener("put", function (e) { var d = JSON.parse(e.data); if (d && d.path === "/") applyServerConfig(d.data); else fbReq("/config").then(applyServerConfig); });
+        esCfg.addEventListener("patch", function () { fbReq("/config").then(applyServerConfig); });
+
+        var esMe = new EventSource(FB_URL + "/players/" + encodeURIComponent(save.pid) + ".json");
+        esMe.addEventListener("put", function (e) { var d = JSON.parse(e.data); if (d && d.path === "/") handleAdminPlayerPatch(d.data); else fbReq("/players/" + encodeURIComponent(save.pid)).then(handleAdminPlayerPatch); });
+        esMe.addEventListener("patch", function () { fbReq("/players/" + encodeURIComponent(save.pid)).then(handleAdminPlayerPatch); });
+
+        var esChat = new EventSource(FB_URL + "/chat.json");
+        esChat.addEventListener("put", function () { fetchChatHistory(); });
+        esChat.addEventListener("patch", function () { fetchChatHistory(); });
+      } catch (err) {}
     }
 
-    // Update Mail recipient select
-    var sel = $("mailTarget");
-    var curVal = sel.value;
-    sel.innerHTML = '<option value="ALL">Tất cả người chơi (' + playerList.length + ' người)</option>';
-    playerList.forEach(function (p) {
-      var opt = document.createElement("option");
-      opt.value = p.pid;
-      opt.textContent = (p.name || "Bạn") + " (" + (p.fcode || p.pid) + ")";
-      sel.appendChild(opt);
+    setInterval(function () {
+      syncOnlinePresence();
+      fbReq("/online").then(function (all) {
+        remotePlayers = all || {};
+        if (phoneOpen && app === "friends") renderPhone();
+      });
+    }, 2500);
+    setInterval(function () {
+      fbReq("/config").then(applyServerConfig);
+      fbReq("/players/" + encodeURIComponent(save.pid)).then(handleAdminPlayerPatch);
+      refreshDirectory();
+    }, 8000);
+    window.addEventListener("beforeunload", function () {
+      try { navigator.sendBeacon(FB_URL + "/online/" + encodeURIComponent(save.pid) + ".json?x-http-method-override=DELETE", ""); } catch (e) {}
     });
-    if (curVal) sel.value = curVal;
   }
 
-  $("playerSearch").addEventListener("input", function () {
-    var now = Date.now();
-    var onlineList = Object.keys(state.online).map(function (k) { return state.online[k]; }).filter(function (p) { return p && (now - (p.updatedAt || 0)) < 15000; });
-    var playerList = Object.keys(state.players).map(function (k) { return state.players[k]; }).filter(Boolean);
-    renderPlayersTable(playerList, onlineList);
+  // ---------- zones ----------
+  var Z = null, ZONES = {};
+  function waterD(x, y, k) { if (!Z.water) return 99; k = k || 1; var w = Z.water; return Math.pow((x - w.cx) / (w.rx * k), 2) + Math.pow((y - w.cy) / (w.ry * k), 2); }
+  function nearPath(x, y, m) {
+    for (var i = 0; i < Z.paths.length; i++) for (var j = 0; j < Z.paths[i].length - 1; j++) { var a = Z.paths[i][j], b = Z.paths[i][j + 1]; if (distSeg(x, y, a[0], a[1], b[0], b[1]) < m) return true; }
+    return false;
+  }
+  function genTrees(z, n, seed, minD, okFn, smin, srange, kindFn) {
+    var r = mulberry(seed), tries = 0; z.trees = [];
+    var prev = Z; Z = z;
+    while (z.trees.length < n && tries++ < 2500) {
+      var x = 40 + r() * (z.w - 80), y = 90 + r() * (z.h - 130);
+      if (!okFn(x, y)) continue;
+      var ok = true;
+      for (var i = 0; i < z.trees.length; i++) if (Math.hypot(z.trees[i].x - x, z.trees[i].y - y) < minD) { ok = false; break; }
+      if (ok) { var h = r(); z.trees.push({ x: x, y: y, s: smin + r() * srange, hue: h, kind: kindFn(h) }); }
+    }
+    Z = prev;
+  }
+  function inBox(x, y, b, m) { return x > b[0] - m && x < b[0] + b[2] + m && y > b[1] - m * 2 && y < b[1] + b[3] + m; }
+
+  function signStatic(x, y, text) {
+    return { y: y, f: function () {
+      ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, x, y, 14, 5); ctx.fill();
+      ctx.fillStyle = "#8d5a3b"; ctx.fillRect(x - 3, y - 48, 6, 48);
+      ctx.font = "800 14px 'Baloo 2', sans-serif"; ctx.textAlign = "center";
+      var w = ctx.measureText(text).width + 22;
+      ctx.fillStyle = "#e9c46a"; rr(ctx, x - w / 2, y - 76, w, 30, 8); ctx.fill();
+      ctx.strokeStyle = "#b8893a"; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = "#3a2a00"; ctx.fillText(text, x, y - 55);
+    } };
+  }
+
+  function buildVillage() {
+    var z = { id: "village", w: 1800, h: 1200, spawn: [900, 640], water: { cx: 360, cy: 830, rx: 230, ry: 140 }, hasShop: true, bugsT: BUGS_V, fishT: FISH_V, bugN: 12, picks: null,
+      paths: [[[900, 520], [1340, 520], [1340, 360]], [[900, 520], [700, 700], [610, 790]], [[900, 520], [350, 520], [350, 300]], [[900, 650], [900, 700], [1760, 700]], [[900, 650], [900, 1170]]],
+      plaza: { x: 900, y: 520, r: 150 }, shop: { x: 1190, y: 190, w: 300, h: 150, door: { x: 1340, y: 372 } }, house: { x: 250, y: 170, w: 200, h: 120 }, fount: { x: 900, y: 520, r: 46 },
+      lamps: [[760, 420], [1040, 420], [1290, 380], [1390, 380], [560, 700]],
+      exits: [{ r: [1730, 640, 60, 120], to: "beach", x: 110, y: 500 }, { r: [820, 1140, 160, 60], to: "forest", x: 800, y: 130 }] };
+    z.rects = [[z.shop.x, z.shop.y + 40, z.shop.w, z.shop.h - 40], [z.house.x, z.house.y + 30, z.house.w, z.house.h - 30]];
+    z.circles = [[z.fount.x, z.fount.y, z.fount.r]];
+    genTrees(z, 34, 11, 80, function (x, y) {
+      Z = z;
+      if (waterD(x, y, 1.35) < 1) return false;
+      if (Math.hypot(x - z.plaza.x, y - z.plaza.y) < 210) return false;
+      if (inBox(x, y, [z.shop.x, z.shop.y, z.shop.w, z.shop.h], 60) || inBox(x, y, [z.house.x, z.house.y, z.house.w, z.house.h], 60)) return false;
+      return !nearPath(x, y, 60);
+    }, 0.6, 0.3, function (h) { return "round"; });
+    z.tp = [["#3fa66b", "#55c27f"], ["#4cb872", "#6ad08a"]];
+    z.bgBuild = function (g) {
+      var r = mulberry(7), i;
+      g.fillStyle = "#86cf8e"; g.fillRect(0, 0, z.w, z.h);
+      for (i = 0; i < 260; i++) { g.fillStyle = r() < 0.5 ? "rgba(120,200,130,.55)" : "rgba(150,222,152,.5)"; ell(g, r() * z.w, r() * z.h, 30 + r() * 70, 20 + r() * 45); g.fill(); }
+      var cols = ["#ffffff", "#ffd6e7", "#fff1a8", "#ffb3c1"];
+      for (i = 0; i < 320; i++) { var fx = r() * z.w, fy = r() * z.h; g.fillStyle = cols[Math.floor(r() * 4)]; g.beginPath(); g.arc(fx, fy, 2 + r() * 1.6, 0, 6.3); g.fill(); g.fillStyle = "#f4c430"; g.beginPath(); g.arc(fx, fy, 1, 0, 6.3); g.fill(); }
+      drawPaths(g, z.paths, "#e6cf98", "#f5e6bd", 78, 66);
+      g.fillStyle = "#e6cf98"; g.beginPath(); g.arc(z.plaza.x, z.plaza.y, z.plaza.r + 10, 0, 6.3); g.fill();
+      g.fillStyle = "#f5e6bd"; g.beginPath(); g.arc(z.plaza.x, z.plaza.y, z.plaza.r, 0, 6.3); g.fill();
+      g.strokeStyle = "#ecd9a6"; g.lineWidth = 3;
+      [60, 100, 135].forEach(function (rad) { g.beginPath(); g.arc(z.plaza.x, z.plaza.y, rad, 0, 6.3); g.stroke(); });
+      var w = z.water;
+      g.fillStyle = "#efdca0"; ell(g, w.cx, w.cy, w.rx + 18, w.ry + 15); g.fill();
+      g.fillStyle = "#5bbfe3"; ell(g, w.cx, w.cy, w.rx, w.ry); g.fill();
+      g.fillStyle = "rgba(160,224,245,.6)"; ell(g, w.cx - 10, w.cy - 8, w.rx * 0.78, w.ry * 0.72); g.fill();
+      for (i = 0; i < 6; i++) {
+        var a = r() * 6.28, d = 0.35 + r() * 0.4, lx = w.cx + Math.cos(a) * w.rx * d, ly = w.cy + Math.sin(a) * w.ry * d;
+        g.fillStyle = "#4fa86a"; g.beginPath(); g.moveTo(lx, ly); g.arc(lx, ly, 14, 0.3, 6.0); g.closePath(); g.fill();
+        if (i % 2 === 0) { g.fillStyle = "#ff9ec4"; g.beginPath(); g.arc(lx + 2, ly - 2, 4, 0, 6.3); g.fill(); }
+      }
+    };
+    z.statics = [{ y: z.house.y + z.house.h, f: drawHouse }, { y: z.shop.y + z.shop.h, f: drawShop }, { y: z.fount.y, f: function (t) { drawFountain(t); } },
+      signStatic(1690, 700, "Bãi biển →"), signStatic(860, 1110, "Khu rừng ↓")];
+    return z;
+  }
+
+  function buildBeach() {
+    var z = { id: "beach", w: 1400, h: 1000, spawn: [110, 500], water: { cx: 1330, cy: 500, rx: 600, ry: 640 }, bugsT: BUGS_B, fishT: FISH_B, bugN: 10,
+      piers: [[690, 484, 330, 32]], paths: [[[60, 500], [700, 500]]], hut: [300, 150, 150, 100],
+      lamps: [[250, 420], [560, 380], [640, 640], [300, 760]],
+      exits: [{ r: [20, 420, 60, 160], to: "village", x: 1690, y: 700 }],
+      picks: { table: PICK_B, n: 11, kind: "shell" } };
+    z.rects = [[z.hut[0], z.hut[1] + 40, z.hut[2], z.hut[3] - 40]];
+    z.circles = [[330, 660, 18], [520, 800, 18]];
+    genTrees(z, 14, 23, 90, function (x, y) { Z = z; return waterD(x, y, 1.25) > 1 && x < 700 && !nearPath(x, y, 60) && !inBox(x, y, z.hut, 50) && x > 90; }, 0.8, 0.3, function () { return "palm"; });
+    z.tp = [["#2f9e5b", "#4fc07a"]];
+    z.bgBuild = function (g) {
+      var r = mulberry(3), i;
+      g.fillStyle = "#f7e4a9"; g.fillRect(0, 0, z.w, z.h);
+      for (i = 0; i < 200; i++) { g.fillStyle = r() < 0.5 ? "rgba(251,238,191,.7)" : "rgba(238,214,150,.5)"; ell(g, r() * z.w, r() * z.h, 30 + r() * 80, 18 + r() * 40); g.fill(); }
+      g.fillStyle = "rgba(143,214,138,.7)";
+      for (i = 0; i < 40; i++) { ell(g, r() * 70, r() * z.h, 20 + r() * 30, 14 + r() * 22); g.fill(); }
+      for (i = 0; i < 180; i++) { g.fillStyle = r() < 0.5 ? "#e9c98a" : "#fff7d6"; g.beginPath(); g.arc(r() * z.w, r() * z.h, 1 + r() * 1.6, 0, 6.3); g.fill(); }
+      var w = z.water;
+      g.fillStyle = "#e6cd8c"; ell(g, w.cx, w.cy, w.rx + 40, w.ry + 40); g.fill();
+      g.fillStyle = "#cfeef0"; ell(g, w.cx, w.cy, w.rx + 14, w.ry + 14); g.fill();
+      g.fillStyle = "#43b0dd"; ell(g, w.cx, w.cy, w.rx, w.ry); g.fill();
+      g.fillStyle = "rgba(255,255,255,.12)"; ell(g, w.cx + 60, w.cy, w.rx * 0.8, w.ry * 0.8); g.fill();
+      g.fillStyle = "rgba(20,90,160,.18)"; ell(g, w.cx + 160, w.cy, w.rx * 0.55, w.ry * 0.6); g.fill();
+      var p = z.piers[0];
+      g.fillStyle = "#b9763f"; g.fillRect(p[0], p[1], p[2], p[3]);
+      g.strokeStyle = "#8e5528"; g.lineWidth = 2;
+      for (i = p[0] + 12; i < p[0] + p[2]; i += 22) { g.beginPath(); g.moveTo(i, p[1]); g.lineTo(i, p[1] + p[3]); g.stroke(); }
+      g.fillStyle = "#6b4423"; for (i = p[0] + 20; i < p[0] + p[2]; i += 66) { g.fillRect(i, p[1] - 5, 6, 8); g.fillRect(i, p[1] + p[3] - 3, 6, 8); }
+      drawPaths(g, z.paths, "#ecd49a", "#f9eac0", 70, 58);
+    };
+    z.statics = [{ y: z.hut[1] + z.hut[3], f: function () { drawHut(z.hut); } }, signStatic(130, 440, "← Về làng"),
+      { y: 560, f: function () { drawUmbrella(420, 560, "#ff7a6b"); } }, { y: 700, f: function () { drawUmbrella(220, 700, "#5ab0ff"); } }, { y: 860, f: function () { drawUmbrella(540, 880, "#ffd23f"); } },
+      { y: 330, f: function () { drawCastle(560, 330); } }];
+    return z;
+  }
+
+  function buildForest() {
+    var z = { id: "forest", w: 1600, h: 1100, spawn: [800, 130], water: null, bugsT: BUGS_F, fishT: null, bugN: 13,
+      paths: [[[800, 0], [800, 500], [1290, 500], [1290, 350]]], house: [1200, 160, 180, 180],
+      lamps: [[1230, 360], [1350, 360], [780, 330]],
+      exits: [{ r: [700, 20, 200, 60], to: "village", x: 900, y: 1100 }],
+      picks: { table: PICK_F, n: 14, kind: "mushroom" } };
+    z.rects = [[1250, 270, 80, 70]];
+    z.circles = [];
+    genTrees(z, 62, 31, 74, function (x, y) { Z = z; return !nearPath(x, y, 56) && !inBox(x, y, z.house, 50) && Math.hypot(x - 450, y - 760) > 110; }, 0.7, 0.35, function (h) { return h > 0.45 ? "pine" : "round"; });
+    z.tp = [["#2f7d4e", "#3f9a60"], ["#2c6e46", "#3a8b58"]];
+    z.bgBuild = function (g) {
+      var r = mulberry(5), i;
+      g.fillStyle = "#4b9b6a"; g.fillRect(0, 0, z.w, z.h);
+      for (i = 0; i < 300; i++) { g.fillStyle = r() < 0.5 ? "rgba(52,128,84,.6)" : "rgba(98,176,121,.45)"; ell(g, r() * z.w, r() * z.h, 30 + r() * 80, 20 + r() * 50); g.fill(); }
+      g.strokeStyle = "rgba(40,110,70,.7)"; g.lineWidth = 2;
+      for (i = 0; i < 160; i++) { var fx = r() * z.w, fy = r() * z.h; for (var k = -2; k <= 2; k++) { g.beginPath(); g.moveTo(fx, fy); g.lineTo(fx + k * 5, fy - 10 - Math.abs(k) * -1); g.stroke(); } }
+      for (i = 0; i < 90; i++) { g.fillStyle = r() < 0.5 ? "#d9a441" : "#c05a3a"; g.beginPath(); g.arc(r() * z.w, r() * z.h, 3 + r() * 3, 0, 6.3); g.fill(); }
+      drawPaths(g, z.paths, "#b38f56", "#cfa96b", 70, 58);
+      g.strokeStyle = "#f7e9b5"; g.lineWidth = 3;
+      for (i = 0; i < 12; i++) { var a = i / 12 * 6.283, mx = 450 + Math.cos(a) * 90, my = 760 + Math.sin(a) * 60; g.fillStyle = "rgba(255,255,255,.22)"; g.beginPath(); g.arc(mx, my, 7, 0, 6.3); g.fill(); }
+    };
+    z.statics = [{ y: 340, f: function () { drawTreeHouse(z.house); } }, signStatic(860, 120, "↑ Về làng"),
+      { y: 790, f: function () { drawRing(450, 760); } }, { y: 600, f: function () { drawLog(260, 600); } }, { y: 900, f: function () { drawLog(1080, 900); } }];
+    return z;
+  }
+
+  function drawPaths(g, paths, c1, c2, w1, w2) {
+    g.lineCap = "round"; g.lineJoin = "round";
+    [[c1, w1], [c2, w2]].forEach(function (st) {
+      g.strokeStyle = st[0]; g.lineWidth = st[1];
+      paths.forEach(function (p) { g.beginPath(); g.moveTo(p[0][0], p[0][1]); for (var k = 1; k < p.length; k++) g.lineTo(p[k][0], p[k][1]); g.stroke(); });
+    });
+  }
+
+  function blocked(x, y) {
+    if (x < 24 || x > Z.w - 24 || y < 60 || y > Z.h - 12) return true;
+    var i;
+    if (Z.piers) for (i = 0; i < Z.piers.length; i++) if (inRect(x, y, Z.piers[i])) return false;
+    if (Z.water && waterD(x, y, 1) < 0.9) return true;
+    for (i = 0; i < Z.rects.length; i++) { var r = Z.rects[i]; if (x > r[0] && x < r[0] + r[2] && y > r[1] && y < r[1] + r[3]) return true; }
+    for (i = 0; i < Z.circles.length; i++) if (Math.hypot(x - Z.circles[i][0], y - Z.circles[i][1]) < Z.circles[i][2]) return true;
+    for (i = 0; i < Z.trees.length; i++) if (Math.hypot(x - Z.trees[i].x, y - Z.trees[i].y) < 15 * Z.trees[i].s) return true;
+    return false;
+  }
+  function moveEnt(e, dx, dy) {
+    var ox = e.x, oy = e.y;
+    if (!blocked(e.x + dx, e.y)) e.x += dx;
+    if (!blocked(e.x, e.y + dy)) e.y += dy;
+    return Math.abs(e.x - ox) + Math.abs(e.y - oy) > 0.01;
+  }
+
+  ZONES.village = buildVillage(); ZONES.beach = buildBeach(); ZONES.forest = buildForest();
+  Object.keys(ZONES).forEach(function (k) {
+    var z = ZONES[k]; Z = z;
+    var bg = document.createElement("canvas"); bg.width = z.w; bg.height = z.h; z.bgBuild(bg.getContext("2d")); z.bg = bg;
+    z.pickState = [];
   });
 
-  function renderCodesTable(codesObj) {
-    var ct = $("codesTable");
-    ct.innerHTML = "";
-    var keys = Object.keys(codesObj);
-    if (!keys.length) {
-      ct.innerHTML = '<tr><td colspan="3" style="color:var(--muted);text-align:center">Chưa có giftcode tùy chỉnh nào.</td></tr>';
+  // ---------- state ----------
+  var W = 0, H = 0, dpr = 1, S = 1, camX = 0, camY = 0, offX = 0, offY = 0;
+  var P = { x: 900, y: 640, face: 1, walk: 0, moving: false, swingT: 0, swingHit: true, bubble: null, fish: null };
+  var pet = { x: 860, y: 650, face: 1, walk: 0, moving: false };
+  var target = null, stuck = 0, tapFx = 0, tapPos = { x: 0, y: 0 };
+  var keys = {}, touchMoveX = 0, touchMoveY = 0, bugs = [], parts = [], pops = [], clock = 0, dark = 0, hourF = 6;
+  var modalOpen = false, phoneOpen = false, introOpen = false, ptgIntroOpen = true, atShop = false, tab = "bag", travelLock = false;
+  var npcs = NPC_DEFS.map(function (d) { return { id: d.id, name: d.name, zone: d.zone, x: d.x, y: d.y, shirt: d.shirt, hair: d.hair, lines: d.lines, t: null, wait: 0, bubble: null, bT: 0, cool: 0, face: 1, walk: 0, moving: false }; });
+
+  function resize() {
+    W = window.innerWidth; H = window.innerHeight; dpr = Math.min(window.devicePixelRatio || 1, /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ? 1.5 : 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); S = clamp(Math.min(W, H) / 560, 0.85, 1.5);
+    var ic = document.getElementById("ic"); ic.width = Math.round(W * dpr); ic.height = Math.round(H * dpr);
+  }
+  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("orientationchange", function () { setTimeout(resize, 120); }, { passive: true });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", resize, { passive: true });
+
+  // ---------- ui helpers ----------
+  function $(id) { return document.getElementById(id); }
+  var elCoins = $("coins"), elBagN = $("bagN"), elAct = $("act"), elActLabel = $("actLabel"), elActKey = $("actKey"), elClock = $("clock"), toasts = $("toasts");
+  function toast(t) {
+    var d = document.createElement("div"); d.className = "toast"; d.textContent = t; toasts.appendChild(d);
+    while (toasts.children.length > 3) toasts.removeChild(toasts.firstChild);
+    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 2700);
+  }
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function bagCount() { var n = 0; for (var k in save.inv) n += save.inv[k]; return n; }
+  function bagValue() {
+    var v = 0, mult = (fbConfig.multipliers && Number(fbConfig.multipliers.coins)) || 1;
+    for (var k in save.inv) v += Math.round((VALUE[k] || 0) * mult) * save.inv[k];
+    return v;
+  }
+  function hud() { elCoins.textContent = save.coins; elBagN.textContent = bagCount(); $("zoneName").textContent = Z ? ZONE_NAMES[Z.id] : ""; }
+  function level() { return Math.floor(Math.sqrt(save.xp / 25)) + 1; }
+  function gainXp(n) {
+    var mult = (fbConfig.multipliers && Number(fbConfig.multipliers.xp)) || 1;
+    var add = Math.max(1, Math.round(n * mult));
+    var o = level(); save.xp += add; var l = level();
+    if (l > o) { save.coins += 20 * l; toast("Lên cấp " + l + "! Thưởng " + 20 * l + " xu."); }
+  }
+  function addItem(name, n) { save.inv[name] = (save.inv[name] || 0) + (n || 1); persist(); hud(); }
+  function say(t) { P.bubble = { text: t, t: 3.2 }; syncOnlinePresence(); }
+  function sparkle(x, y, color, n) { for (var i = 0; i < n; i++) { var a = rand(0, 6.28), s = rand(40, 130); parts.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 30, life: rand(0.4, 0.8), max: 0.8, color: color }); } }
+  function popText(x, y, t, c) { pops.push({ x: x, y: y, t: t, c: c, life: 1.2 }); }
+  function isChatFocused() { return document.activeElement === $("chatInp"); }
+  function uiOpen() { return modalOpen || phoneOpen || introOpen || ptgIntroOpen || isChatFocused(); }
+  function itemInfo(id) { return byId(HATS, id) || byId(SHIRTS, id) || byId(PETS, id); }
+
+  // ---------- zones: enter / travel ----------
+  function spawnBug() {
+    var t = wpick(Z.bugsT), x, y, n = 0;
+    do { x = rand(60, Z.w - 60); y = rand(100, Z.h - 60); n++; } while ((waterD(x, y, 1.1) < 1 || Math.hypot(x - P.x, y - P.y) < 200) && n < 25);
+    bugs.push({ t: t, x: x, y: y, z: 0, ang: rand(0, 6.28), timer: rand(0.4, 1.5), ph: rand(0, 6.28) });
+  }
+  function placePick(p) {
+    var n = 0, x, y;
+    do { x = rand(70, Z.w - 70); y = rand(110, Z.h - 70); n++; } while ((blocked(x, y) || waterD(x, y, 1.12) < 1 || nearPath(x, y, 30) || Math.hypot(x - P.x, y - P.y) < 120) && n < 60);
+    p.x = x; p.y = y; p.k = wpick(Z.picks.table); p.t = 0;
+  }
+  function enterZone(id, x, y) {
+    Z = ZONES[id]; P.x = x; P.y = y; P.fish = null; P.swingT = 0; pet.x = x; pet.y = y; target = null; parts = []; pops = []; bugs = [];
+    for (var i = 0; i < Z.bugN; i++) spawnBug();
+    if (Z.picks && !Z.pickState.length) for (var j = 0; j < Z.picks.n; j++) { var p = { x: 0, y: 0, k: null, t: 0 }; placePick(p); Z.pickState.push(p); }
+    hud();
+  }
+  function banner(text) { var b = $("banner"); b.textContent = text; b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
+  function travel(id, x, y) {
+    if (travelLock) return; travelLock = true; $("fade").classList.add("on");
+    setTimeout(function () {
+      enterZone(id, x, y); banner(ZONE_NAMES[id]);
+      if (!save.visited[id]) { save.visited[id] = true; save.coins += 50; gainXp(20); persist(); hud(); setTimeout(function () { toast("Lần đầu đến " + ZONE_NAMES[id] + ": thưởng 50 xu!"); }, 700); }
+      $("fade").classList.remove("on");
+      setTimeout(function () { travelLock = false; }, 450);
+    }, 400);
+  }
+
+  // ---------- actions ----------
+  function doCatch() {
+    var cx = P.x + P.face * 18, cy = P.y, best = -1, bd = 80, i;
+    for (i = 0; i < bugs.length; i++) { var d = Math.hypot(bugs[i].x - cx, bugs[i].y - cy); if (d < bd) { bd = d; best = i; } }
+    if (best < 0) { toast("Trượt rồi! Lại gần hơn nhé."); return; }
+    var b = bugs.splice(best, 1)[0];
+    addItem(b.t.n); save.stats.bugs++; gainXp(3 + Math.round(b.t.v / 8)); sparkle(b.x, b.y - b.z, b.t.c, 16);
+    popText(b.x, b.y - 30, b.t.n, "#23324a"); toast("Bắt được " + b.t.n + "! Giá bán " + b.t.v + " xu.");
+  }
+  function startFish() { P.fish = { phase: "wait", t: 0, biteAt: rand(1.5, 4) }; var w = Z.water; P.face = w.cx > P.x ? 1 : -1; }
+  function bobberPos() {
+    if (!Z.water) return null;
+    var dx = Z.water.cx - P.x, dy = Z.water.cy - P.y, l = Math.hypot(dx, dy) || 1, ux = dx / l, uy = dy / l;
+    for (var s = 24; s < 175; s += 6) { var x = P.x + ux * s, y = P.y + uy * s; if (waterD(x, y, 1) < 0.95) return { x: x + ux * 26, y: y + uy * 26 }; }
+    return null;
+  }
+  function reel() {
+    var f = wpick(Z.fishT); addItem(f.n); P.fish = null; save.stats.fish++; gainXp(4 + Math.round(f.v / 8));
+    var b = bobberPos() || P; sparkle(b.x, b.y, "#ffffff", 14);
+    toast(f.v <= 1 ? "Ôi, câu trúng " + f.n.toLowerCase() + "!" : "Câu được " + f.n + "! Giá bán " + f.v + " xu.");
+  }
+  function nearPick() {
+    var best = null, bd = 56;
+    if (!Z.picks) return null;
+    Z.pickState.forEach(function (p) { if (p.t <= 0) { var d = Math.hypot(p.x - P.x, p.y - P.y); if (d < bd) { bd = d; best = p; } } });
+    return best;
+  }
+  function ctxAction() {
+    if (P.fish) return P.fish.phase === "bite" ? "reel" : "cancel";
+    if (Z.hasShop && Math.hypot(P.x - Z.shop.door.x, P.y - Z.shop.door.y) < 90) return "shop";
+    if (nearPick()) return "pick";
+    if (bobberPos()) return "fish";
+    return "net";
+  }
+  var LABEL = { reel: "KÉO!", cancel: "Thôi", shop: "Vào tiệm", fish: "Câu cá", net: "Vợt", pick: "Nhặt" };
+  function act() {
+    if (uiOpen() || travelLock) return;
+    var c = ctxAction();
+    if (c === "reel") reel();
+    else if (c === "cancel") { P.fish = null; toast("Kéo sớm quá, cá chạy mất rồi!"); }
+    else if (c === "shop") openModal(true);
+    else if (c === "pick") { var p = nearPick(); if (p) { addItem(p.k.n); save.stats.picks++; gainXp(2 + Math.round(p.k.v / 10)); sparkle(p.x, p.y - 8, p.k.c, 12); toast("Nhặt được " + p.k.n + "! Giá bán " + p.k.v + " xu."); p.t = 28; } }
+    else if (c === "fish") { startFish(); toast("Thả cần rồi. Chờ dấu chấm than nhé."); }
+    else if (P.swingT <= 0) { P.swingT = 0.4; P.swingHit = false; }
+  }
+
+  // ---------- input ----------
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (isChatFocused()) { $("chatInp").blur(); return; }
+      if (phoneOpen) closePhone(); else if (modalOpen) closeModal(); return;
+    }
+    if (e.key === "Enter" && !modalOpen && !phoneOpen && !introOpen && !ptgIntroOpen) {
+      if (!isChatFocused()) {
+        e.preventDefault();
+        $("chatInp").focus();
+        return;
+      }
+    }
+    if (uiOpen()) return;
+    var k = e.key.toLowerCase();
+    if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].indexOf(k) >= 0) e.preventDefault();
+    if (k === " " || k === "e") { if (!e.repeat) act(); return; }
+    keys[k] = true;
+  });
+  window.addEventListener("keyup", function (e) { keys[e.key.toLowerCase()] = false; });
+  cv.addEventListener("pointerdown", function (e) {
+    if (isChatFocused()) $("chatInp").blur();
+    if (uiOpen() || travelLock) return;
+    var rect = cv.getBoundingClientRect();
+    var wx = (e.clientX - rect.left) / S + camX - offX, wy = (e.clientY - rect.top) / S + camY - offY;
+    target = { x: clamp(wx, 30, Z.w - 30), y: clamp(wy, 70, Z.h - 20) }; tapPos = target; tapFx = 0.6; stuck = 0;
+  });
+  elAct.addEventListener("pointerdown", function (e) { e.preventDefault(); act(); });
+  // Virtual joystick: supports simultaneous touch movement and action button presses.
+  (function initTouchPad() {
+    var pad = $("touchPad"), knob = $("touchKnob"), activeId = null;
+    if (!pad || !knob) return;
+    var radius = 34;
+    function reset() { touchMoveX = 0; touchMoveY = 0; activeId = null; knob.style.transform = "translate(0,0)"; }
+    function move(e) {
+      if (activeId !== e.pointerId) return;
+      var r = pad.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var dx = e.clientX - cx, dy = e.clientY - cy, len = Math.hypot(dx, dy);
+      if (len > radius) { dx = dx / len * radius; dy = dy / len * radius; }
+      touchMoveX = dx / radius; touchMoveY = dy / radius;
+      knob.style.transform = "translate(" + dx + "px," + dy + "px)";
+      if (Math.hypot(touchMoveX, touchMoveY) > .16) target = null;
+    }
+    pad.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); activeId = e.pointerId;
+      try { pad.setPointerCapture(e.pointerId); } catch (_) {}
+      move(e);
+    });
+    pad.addEventListener("pointermove", move);
+    pad.addEventListener("pointerup", function (e) { if (activeId === e.pointerId) reset(); });
+    pad.addEventListener("pointercancel", reset);
+    pad.addEventListener("lostpointercapture", reset);
+  })();
+  document.querySelectorAll(".emotes button").forEach(function (b) { b.addEventListener("click", function () { sendChatMessage(b.getAttribute("data-say")); b.blur(); }); });
+  $("bagBtn").addEventListener("click", function () { this.blur(); openModal(false); });
+  $("phoneBtn").addEventListener("click", function () { this.blur(); openPhone(); });
+
+  // Chat bar events
+  $("chatToggle").addEventListener("click", function () {
+    chatExpanded = !chatExpanded;
+    renderChatFeed();
+    this.blur();
+  });
+  $("chatSend").addEventListener("click", function () {
+    var inp = $("chatInp");
+    sendChatMessage(inp.value);
+    inp.value = "";
+    inp.blur();
+  });
+  $("chatInp").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendChatMessage(this.value);
+      this.value = "";
+      this.blur();
+    }
+  });
+  $("chatInp").addEventListener("focus", function () {
+    keys = {};
+    if (chatMessages.length > 0) {
+      chatExpanded = true;
+      renderChatFeed();
+    }
+  });
+
+  // ---------- shop / bag modal ----------
+  var modal = $("modal"), mBody = $("mBody"), tabsEl = $("tabs"), mTitle = $("mTitle");
+  function openModal(shop) { if (modalOpen || phoneOpen || introOpen || ptgIntroOpen) return; atShop = shop; modalOpen = true; keys = {}; tab = "bag"; target = null; mTitle.textContent = shop ? "Tiệm làng" : "Balo"; modal.hidden = false; renderModal(); }
+  function closeModal() { modalOpen = false; modal.hidden = true; }
+  $("mClose").addEventListener("click", closeModal);
+  modal.addEventListener("pointerdown", function (e) { if (e.target === modal) closeModal(); });
+
+  function renderModal() {
+    tabsEl.innerHTML = ""; mBody.innerHTML = "";
+    [["bag", "Balo"], ["wear", "Trang phục"], ["pet", "Thú cưng"]].forEach(function (t) {
+      var b = el("button", "tab", t[1]); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", tab === t[0] ? "true" : "false");
+      b.addEventListener("click", function () { tab = t[0]; renderModal(); }); tabsEl.appendChild(b);
+    });
+    if (tab === "bag") {
+      var names = Object.keys(save.inv).filter(function (n) { return save.inv[n] > 0; });
+      if (!names.length) mBody.appendChild(el("p", "empty", "Balo đang trống. Hãy đi vợt côn trùng, câu cá hoặc nhặt đồ nhé."));
+      names.forEach(function (n) {
+        var it = el("div", "item"), nm = el("div", "name", n + " x" + save.inv[n]); nm.appendChild(el("small", null, (VALUE[n] || 0) + " xu mỗi món")); it.appendChild(nm); mBody.appendChild(it);
+      });
+      if (names.length) {
+        if (atShop) { var s = el("button", "btn sun sell", "Bán hết, nhận " + bagValue() + " xu"); s.type = "button"; s.addEventListener("click", function () { var v = bagValue(); save.coins += v; save.stats.earned += v; save.inv = {}; persist(); hud(); toast("Đã bán hết, nhận " + v + " xu."); renderModal(); }); mBody.appendChild(s); }
+        else mBody.appendChild(el("p", "empty", "Đến cửa tiệm ở làng để bán, hoặc dùng app Tái chế trong điện thoại."));
+      }
+    } else {
+      var list = (tab === "wear" ? HATS.concat(SHIRTS) : PETS).filter(function (it) { return it.price != null || save.owned[it.id]; });
+      list.forEach(function (it) {
+        var slot = it.id.indexOf("hat_") === 0 ? "hat" : it.id.indexOf("sh_") === 0 ? "shirt" : "pet";
+        var row = el("div", "item"), chip = el("div", "chip"); chip.style.background = it.color;
+        var nm = el("div", "name", it.name); nm.appendChild(el("small", null, slot === "hat" ? "Mũ" : slot === "shirt" ? "Áo" : "Thú cưng"));
+        var btn = el("button", "btn"); btn.type = "button";
+        var owned = !!save.owned[it.id], on = save.eq[slot] === it.id;
+        if (!owned) {
+          var curPrice = getItemPrice(it);
+          btn.textContent = curPrice + " xu"; btn.className = "btn sun"; btn.disabled = !atShop; if (!atShop) btn.title = "Mua tại tiệm làng";
+          btn.addEventListener("click", function () { var pNow = getItemPrice(it); if (save.coins < pNow) { toast("Chưa đủ xu, đi câu thêm nhé!"); return; } save.coins -= pNow; save.owned[it.id] = true; save.eq[slot] = it.id; persist(); hud(); toast("Đã mua " + it.name + "!"); renderModal(); });
+        } else if (on && slot !== "shirt") { btn.textContent = "Tháo"; btn.className = "btn ghost"; btn.addEventListener("click", function () { save.eq[slot] = null; persist(); renderModal(); }); }
+        else if (on) { btn.textContent = "Đang mặc"; btn.className = "btn ghost"; btn.disabled = true; }
+        else { btn.textContent = "Mặc"; btn.addEventListener("click", function () { save.eq[slot] = it.id; persist(); renderModal(); }); }
+        row.appendChild(chip); row.appendChild(nm); row.appendChild(btn); mBody.appendChild(row);
+      });
+    }
+  }
+
+  // ---------- phone ----------
+  var phoneModal = $("phoneModal"), pScreen = $("pScreen"), app = "home", friendSubTab = "list", friendSearchQuery = "";
+  var ICONS = {
+    friends: '<svg viewBox="0 0 24 24" fill="#fff"><circle cx="9" cy="8" r="3.4"/><circle cx="17" cy="9.5" r="2.7"/><path d="M2.5 19c0-3.6 2.9-5.8 6.5-5.8s6.5 2.2 6.5 5.8z"/><path d="M15.5 14c3 .1 6 1.5 6 5h-4.6c0-2-.6-3.6-1.4-5z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="#fff"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2.4" fill="#5b8def"/><path d="M5.5 16.5c.4-2 1.8-2.8 3.5-2.8s3.1.8 3.5 2.8z" fill="#5b8def"/><rect x="14" y="9.5" width="5" height="1.8" rx=".9" fill="#5b8def"/><rect x="14" y="13" width="4" height="1.8" rx=".9" fill="#5b8def"/></svg>',
+    code: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M12 9v11M3.5 13h17M12 9c-3-.5-5-2-4-3.6 1.2-1.7 3.6-.4 4 3.6zM12 9c3-.5 5-2 4-3.6-1.2-1.7-3.6-.4-4 3.6z"/></svg>',
+    recycle: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l-3 5h6M5.5 16.5C4.5 14 5.6 10.5 8.5 9M17 14l3 5h-6M18.5 16.5"/><path d="M10 4l3.5 2-2 3.4M14 5.2c3 .4 5.2 2.8 5.2 5.3M8.5 9L6 8.2"/><path d="M4 19h6M14 19h6"/></svg>',
+    map: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5a6.5 6.5 0 0 0-6.5 6.5c0 4.7 6.5 12.5 6.5 12.5s6.5-7.8 6.5-12.5A6.5 6.5 0 0 0 12 2.5z"/><circle cx="12" cy="9" r="2.5" fill="#f08a3c"/></svg>',
+    bag: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 7V6a4 4 0 0 1 8 0v1h2.5a1 1 0 0 1 1 1.1l-1 11.2a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7l-1-11.2a1 1 0 0 1 1-1.1zm2 0h4V6a2 2 0 0 0-4 0z"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/></svg>'
+  };
+  function openPhone() {
+    if (modalOpen || phoneOpen || introOpen || ptgIntroOpen) return;
+    phoneOpen = true; keys = {}; target = null; app = "home"; phoneModal.hidden = false;
+    refreshDirectory();
+    renderPhone();
+  }
+  function closePhone() { phoneOpen = false; phoneModal.hidden = true; }
+  $("pClose").addEventListener("click", closePhone);
+  $("pHome").addEventListener("click", function () { app = "home"; renderPhone(); });
+  $("pBack").addEventListener("click", function () { app = (typeof app === "string" && app.indexOf("friend:") === 0) ? "friends" : "home"; renderPhone(); });
+  phoneModal.addEventListener("pointerdown", function (e) { if (e.target === phoneModal) closePhone(); });
+
+  function hearts(id) { var f = save.friends[id]; return f ? Math.min(5, Math.floor(f.pts / 20)) : 0; }
+  function heartRow(n) { var s = el("div", "hearts"); for (var i = 0; i < 5; i++) { var h = el("span", i < n ? "" : "off", "♥"); s.appendChild(h); } return s; }
+  function friendCount() { return Object.keys(save.friends).length + Object.keys(save.playerFriends || {}).length; }
+  function npcById(id) { for (var i = 0; i < npcs.length; i++) if (npcs[i].id === id) return npcs[i]; return null; }
+  function isPlayerOnline(pid) {
+    var rp = remotePlayers[pid];
+    if (rp && (Date.now() - (rp.updatedAt || 0)) < 16000) return true;
+    var dir = allDirectory[pid];
+    if (dir && (Date.now() - (dir.lastSeen || 0)) < 20000) return true;
+    return false;
+  }
+
+  function renderPhone() {
+    var h = Math.floor(hourF), m = Math.floor((hourF - h) * 60);
+    $("pTime").textContent = (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+    pScreen.innerHTML = "";
+    if (app === "home") renderHome();
+    else if (app === "friends") renderFriends();
+    else if (app.indexOf("friend:") === 0) renderFriend(app.slice(7));
+    else if (app === "profile") renderProfile();
+    else if (app === "code") renderCode();
+    else if (app === "recycle") renderRecycle();
+    else if (app === "map") renderMap();
+    else if (app === "mail") renderMail();
+    else if (app === "bag") { closePhone(); openModal(false); }
+  }
+  function renderHome() {
+    pScreen.appendChild(el("h2", "ph1", "Xin chào, " + save.name));
+    var reqN = pendingReqCount();
+    var grid = el("div", "apps");
+    [["friends", "Bạn bè", "#ff6b9a"], ["profile", "Hồ sơ", "#5b8def"], ["code", "Nhập code", "#9b5de5"], ["recycle", "Tái chế", "#3fae6a"], ["map", "Bản đồ", "#f08a3c"], ["mail", "Hộp thư", "#ff7a6b"], ["bag", "Balo", "#3bb8c9"]].forEach(function (a) {
+      var b = el("button", "app"); b.type = "button"; var i = el("i"); i.style.background = a[2]; i.innerHTML = ICONS[a[0]];
+      if (a[0] === "friends" && reqN > 0) {
+        var bd = el("span", "notif-badge", String(reqN));
+        i.appendChild(bd);
+      }
+      b.appendChild(i); b.appendChild(el("span", null, a[1]));
+      b.addEventListener("click", function () {
+        app = a[0];
+        if (app === "friends") refreshDirectory().then(function () { if (phoneOpen && app === "friends") renderPhone(); });
+        renderPhone();
+      });
+      grid.appendChild(b);
+    });
+    pScreen.appendChild(grid);
+    var tip = el("p", "empty", "Mẹo: Dùng Bạn bè để tìm tên người chơi (kể cả offline), nhận lời mời kết bạn hoặc trò chuyện dưới màn hình chính.");
+    tip.style.marginTop = "22px"; pScreen.appendChild(tip);
+  }
+
+  function sendPlayerFriendReq(targetPid, targetName) {
+    if (!targetPid || targetPid === save.pid) return;
+    if (save.playerFriends && save.playerFriends[targetPid]) {
+      toast("Bạn và " + targetName + " đã là bạn bè rồi!");
       return;
     }
-    keys.forEach(function (code) {
-      var c = codesObj[code];
-      if (!c) return;
-      var tr = document.createElement("tr");
-      tr.innerHTML = '<td><strong>' + esc(code) + '</strong></td>' +
-        '<td>' + esc(c.msg || "") + '</td>' +
-        '<td><button class="btn coral sm" type="button">Xóa</button></td>';
-      tr.querySelector("button").addEventListener("click", function () {
-        fbReq("/config/codes/" + encodeURIComponent(code), "DELETE").then(function () {
-          toast("Đã xóa giftcode " + code);
-          loadAll();
+    var reqData = {
+      fromPid: save.pid,
+      fromName: save.name,
+      fromFcode: save.fcode,
+      fromShirt: (byId(SHIRTS, save.eq.shirt) || { color: "#ff7a6b" }).color,
+      ts: Date.now()
+    };
+    fbReq("/players/" + encodeURIComponent(targetPid) + "/friendRequests/" + encodeURIComponent(save.pid), "PUT", reqData).then(function () {
+      toast("Đã gửi lời mời kết bạn tới " + targetName + "!");
+    });
+  }
+
+  function acceptFriendRequest(fromPid) {
+    var req = friendRequests[fromPid];
+    if (!req) return;
+    var now = Date.now();
+    var myFriendEntry = {
+      pid: fromPid,
+      name: req.fromName || "Người chơi",
+      fcode: req.fromFcode || "",
+      shirt: req.fromShirt || "#5ab0ff",
+      since: now
+    };
+    var theirFriendEntry = {
+      pid: save.pid,
+      name: save.name,
+      fcode: save.fcode,
+      shirt: (byId(SHIRTS, save.eq.shirt) || { color: "#ff7a6b" }).color,
+      since: now
+    };
+    save.playerFriends[fromPid] = myFriendEntry;
+    delete friendRequests[fromPid];
+    updateBadges();
+    persist();
+    fbReq("/players/" + encodeURIComponent(save.pid) + "/friendRequests/" + encodeURIComponent(fromPid), "DELETE");
+    fbReq("/players/" + encodeURIComponent(fromPid) + "/playerFriends/" + encodeURIComponent(save.pid), "PUT", theirFriendEntry);
+    toast("Đã đồng ý kết bạn với " + myFriendEntry.name + "!");
+    renderPhone();
+  }
+
+  function declineFriendRequest(fromPid) {
+    delete friendRequests[fromPid];
+    updateBadges();
+    fbReq("/players/" + encodeURIComponent(save.pid) + "/friendRequests/" + encodeURIComponent(fromPid), "DELETE");
+    toast("Đã từ chối lời mời kết bạn.");
+    renderPhone();
+  }
+
+  function renderFriends() {
+    var reqN = pendingReqCount();
+    pScreen.appendChild(el("h2", "ph1", "Bạn bè (" + friendCount() + ")"));
+
+    var subTabs = el("div", "ptabs");
+    [["list", "Danh sách"], ["search", "Tìm bạn"], ["requests", "Lời mời" + (reqN > 0 ? " (" + reqN + ")" : "")]].forEach(function (t) {
+      var b = el("button", "ptab" + (friendSubTab === t[0] ? " on" : ""), t[1]);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        friendSubTab = t[0];
+        if (t[0] === "search" || t[0] === "list") refreshDirectory().then(function () { if (phoneOpen && app === "friends") renderPhone(); });
+        renderPhone();
+      });
+      subTabs.appendChild(b);
+    });
+    pScreen.appendChild(subTabs);
+
+    if (friendSubTab === "requests") {
+      var rKeys = Object.keys(friendRequests || {});
+      if (!rKeys.length) {
+        pScreen.appendChild(el("p", "empty", "Hiện chưa có lời mời kết bạn nào gửi tới bạn."));
+        return;
+      }
+      var rg = el("div", "pgrid");
+      rKeys.forEach(function (fpid) {
+        var r = friendRequests[fpid];
+        if (!r) return;
+        var row = el("div", "item");
+        var chip = el("div", "chip");
+        chip.style.background = r.fromShirt || "#5ab0ff";
+        var dot = el("span", "status-dot" + (isPlayerOnline(fpid) ? " on" : ""));
+        chip.appendChild(dot);
+
+        var nm = el("div", "name", r.fromName || "Người chơi");
+        nm.appendChild(el("small", null, (r.fromFcode || "") + (isPlayerOnline(fpid) ? " · Trực tuyến" : " · Ngoại tuyến")));
+
+        var bOk = el("button", "btn green", "Nhận");
+        bOk.type = "button";
+        bOk.addEventListener("click", function () { acceptFriendRequest(fpid); });
+
+        var bNo = el("button", "btn ghost", "Xóa");
+        bNo.type = "button";
+        bNo.addEventListener("click", function () { declineFriendRequest(fpid); });
+
+        row.appendChild(chip);
+        row.appendChild(nm);
+        row.appendChild(bOk);
+        row.appendChild(bNo);
+        rg.appendChild(row);
+      });
+      pScreen.appendChild(rg);
+      return;
+    }
+
+    if (friendSubTab === "search") {
+      var sRow = el("div", "search-row");
+      var sInp = el("input", "inp");
+      sInp.type = "text";
+      sInp.placeholder = "Nhập tên hoặc mã LV-...";
+      sInp.value = friendSearchQuery;
+      sInp.setAttribute("aria-label", "Tìm tên bạn bè");
+
+      var sBtn = el("button", "btn sun", "Tìm");
+      sBtn.type = "button";
+      function doSearch() {
+        friendSearchQuery = sInp.value.trim();
+        refreshDirectory().then(function () {
+          if (phoneOpen && app === "friends" && friendSubTab === "search") renderPhone();
+        });
+        renderPhone();
+      }
+      sBtn.addEventListener("click", doSearch);
+      sInp.addEventListener("keydown", function (e) { if (e.key === "Enter") doSearch(); });
+      sRow.appendChild(sInp);
+      sRow.appendChild(sBtn);
+      pScreen.appendChild(sRow);
+
+      var q = friendSearchQuery.toLowerCase();
+      var candidates = [];
+      var seenPids = {};
+      // Combine directory (includes offline players) + live online players
+      Object.keys(allDirectory || {}).forEach(function (pid) {
+        if (pid === save.pid) return;
+        var p = allDirectory[pid];
+        if (!p || !p.name) return;
+        seenPids[pid] = true;
+        candidates.push({
+          pid: pid,
+          name: p.name,
+          fcode: p.fcode || "",
+          shirt: p.shirt || (p.eq && byId(SHIRTS, p.eq.shirt) ? byId(SHIRTS, p.eq.shirt).color : "#5ab0ff"),
+          zone: p.zone || "village",
+          online: isPlayerOnline(pid),
+          lastSeen: p.lastSeen || 0
         });
       });
-      ct.appendChild(tr);
-    });
-  }
+      Object.keys(remotePlayers || {}).forEach(function (pid) {
+        if (pid === save.pid || seenPids[pid]) return;
+        var rp = remotePlayers[pid];
+        if (!rp || !rp.name) return;
+        candidates.push({
+          pid: pid,
+          name: rp.name,
+          fcode: rp.fcode || "",
+          shirt: rp.shirt || "#5ab0ff",
+          zone: rp.zone || "village",
+          online: isPlayerOnline(pid),
+          lastSeen: rp.updatedAt || 0
+        });
+      });
 
-  function renderBetaTable(betaKeys) {
-    var table = $("betaTable");
-    table.innerHTML = "";
-    var keys = Object.keys(betaKeys || {});
-    if (!keys.length) {
-      table.innerHTML = '<tr><td colspan="5" style="color:var(--muted);text-align:center">Chưa có Beta Key nào.</td></tr>';
+      var filtered = candidates.filter(function (c) {
+        if (!q) return true;
+        return (c.name && c.name.toLowerCase().indexOf(q) >= 0) || (c.fcode && c.fcode.toLowerCase().indexOf(q) >= 0);
+      });
+      filtered.sort(function (a, b) {
+        if (a.online !== b.online) return a.online ? -1 : 1;
+        return (b.lastSeen || 0) - (a.lastSeen || 0);
+      });
+
+      if (!filtered.length) {
+        pScreen.appendChild(el("p", "empty", q ? "Không tìm thấy người chơi nào khớp với \"" + friendSearchQuery + "\"." : "Chưa có dữ liệu người chơi khác."));
+        return;
+      }
+
+      var sg = el("div", "pgrid");
+      filtered.slice(0, 30).forEach(function (c) {
+        var row = el("div", "item");
+        var chip = el("div", "chip");
+        chip.style.background = c.shirt;
+        chip.appendChild(el("span", "status-dot" + (c.online ? " on" : "")));
+
+        var nm = el("div", "name", c.name);
+        var statusTxt = c.online ? ("Trực tuyến · " + (ZONE_NAMES[c.zone] || "Làng")) : "Ngoại tuyến (Offline)";
+        nm.appendChild(el("small", null, (c.fcode ? c.fcode + " · " : "") + statusTxt));
+
+        var already = !!(save.playerFriends && save.playerFriends[c.pid]);
+        var btn = el("button", already ? "btn ghost" : "btn green", already ? "Bạn bè" : "Kết bạn");
+        btn.type = "button";
+        btn.disabled = already;
+        if (!already) {
+          btn.addEventListener("click", function () {
+            sendPlayerFriendReq(c.pid, c.name);
+            btn.textContent = "Đã gửi";
+            btn.disabled = true;
+          });
+        }
+        row.appendChild(chip);
+        row.appendChild(nm);
+        row.appendChild(btn);
+        sg.appendChild(row);
+      });
+      pScreen.appendChild(sg);
       return;
     }
-    keys.forEach(function (key) {
-      var item = betaKeys[key] || {};
-      var used = Number(item.used || 0), limit = Number(item.limit || 0);
-      var tr = document.createElement("tr");
-      tr.innerHTML = '<td><strong>' + esc(item.name || "Beta Tester") + '</strong></td>' +
-        '<td style="font-family:monospace;font-weight:700">' + esc(key) + '</td>' +
-        '<td>' + used.toLocaleString("vi-VN") + ' / ' + limit.toLocaleString("vi-VN") + '</td>' +
-        '<td><span class="badge ' + (item.active === false ? 'offline' : 'online') + '">' + (item.active === false ? 'Đã tắt' : (used >= limit ? 'Hết lượt' : 'Hoạt động')) + '</span></td>' +
-        '<td><div class="row"><button class="btn ghost sm toggle-beta" type="button">' + (item.active === false ? 'Bật' : 'Tắt') + '</button><button class="btn coral sm delete-beta" type="button">Xóa</button></div></td>';
-      tr.querySelector(".toggle-beta").addEventListener("click", function () {
-        fbReq("/betaKeys/" + encodeURIComponent(key), "PATCH", { active: item.active === false }).then(function () {
-          toast(item.active === false ? "Đã bật Beta Key." : "Đã tắt Beta Key.");
-          loadAll();
-        }).catch(function () { toast("Không thể cập nhật Beta Key."); });
+
+    // Default tab: list (Player friends + Villager NPCs)
+    var pfIds = Object.keys(save.playerFriends || {});
+    if (pfIds.length) {
+      pScreen.appendChild(el("span", "lbl", "Bạn bè người chơi (" + pfIds.length + ")"));
+      var pg = el("div", "pgrid");
+      pfIds.forEach(function (fpid) {
+        var pf = save.playerFriends[fpid];
+        var dir = allDirectory[fpid] || {};
+        var on = isPlayerOnline(fpid);
+        var curZone = (remotePlayers[fpid] && remotePlayers[fpid].zone) || dir.zone || "village";
+        var row = el("div", "item");
+        var chip = el("div", "chip");
+        chip.style.background = (remotePlayers[fpid] && remotePlayers[fpid].shirt) || pf.shirt || "#5ab0ff";
+        chip.appendChild(el("span", "status-dot" + (on ? " on" : "")));
+
+        var nm = el("div", "name", dir.name || pf.name || "Người chơi");
+        nm.appendChild(el("small", null, on ? ("Đang online ở " + (ZONE_NAMES[curZone] || "Làng")) : "Đang offline"));
+
+        row.appendChild(chip);
+        row.appendChild(nm);
+        if (on && curZone !== Z.id) {
+          var goBtn = el("button", "btn", "Đến cùng");
+          goBtn.type = "button";
+          goBtn.addEventListener("click", function () {
+            closePhone();
+            var sp = ZONES[curZone] ? ZONES[curZone].spawn : ZONES.village.spawn;
+            travel(curZone, sp[0], sp[1]);
+          });
+          row.appendChild(goBtn);
+        }
+        pg.appendChild(row);
       });
-      tr.querySelector(".delete-beta").addEventListener("click", function () {
-        if (!confirm("Xóa Beta Key " + key + "?")) return;
-        fbReq("/betaKeys/" + encodeURIComponent(key), "DELETE").then(function () {
-          toast("Đã xóa Beta Key " + key + ".");
-          loadAll();
-        }).catch(function () { toast("Không thể xóa Beta Key."); });
+      pScreen.appendChild(pg);
+    }
+
+    pScreen.appendChild(el("span", "lbl", "Dân làng (" + Object.keys(save.friends).length + "/" + npcs.length + ")"));
+    var g = el("div", "pgrid");
+    npcs.forEach(function (n) {
+      var f = save.friends[n.id], row = el("div", "item"), chip = el("div", "chip"); chip.style.background = n.shirt;
+      var nm = el("div", "name", n.name); nm.appendChild(el("small", null, "Đang ở " + ZONE_NAMES[n.zone]));
+      row.appendChild(chip); row.appendChild(nm);
+      var btn = el("button", "btn"); btn.type = "button";
+      if (f) { row.appendChild(heartRow(hearts(n.id))); btn.textContent = "Xem"; btn.addEventListener("click", function () { app = "friend:" + n.id; renderPhone(); }); }
+      else { btn.className = "btn green"; btn.textContent = "Kết bạn"; btn.addEventListener("click", function () { requestFriend(n); }); }
+      row.appendChild(btn); g.appendChild(row);
+    });
+    pScreen.appendChild(g);
+  }
+  function requestFriend(n) {
+    if (Z.id !== n.zone) { toast("Hãy đến " + ZONE_NAMES[n.zone] + " để gặp " + n.name + "."); return; }
+    if (Math.hypot(P.x - n.x, P.y - n.y) > 170) { toast("Hãy đến gần " + n.name + " một chút nhé."); return; }
+    toast("Đã gửi lời mời kết bạn cho " + n.name + "...");
+    setTimeout(function () {
+      if (save.friends[n.id]) return;
+      save.friends[n.id] = { pts: 0, since: Date.now(), r3: false, r5: false }; gainXp(15); persist();
+      toast(n.name + " đã đồng ý kết bạn!"); sparkle(n.x, n.y - 40, "#ff5d8f", 18); say("Mình là bạn rồi nhé, " + n.name + "!");
+      if (phoneOpen) renderPhone();
+    }, 1200);
+  }
+  function renderFriend(id) {
+    var n = npcById(id), f = save.friends[id]; if (!n || !f) { app = "friends"; renderFriends(); return; }
+    var c = el("div", "card prof");
+    var chip = el("div", "chip"); chip.style.cssText = "width:64px;height:64px;background:" + n.shirt; c.appendChild(chip);
+    var info = el("div"); info.appendChild(el("h2", "ph1", n.name)); info.lastChild.style.margin = "0"; info.appendChild(el("div", "empty", "Đang ở " + ZONE_NAMES[n.zone])); info.appendChild(heartRow(hearts(id))); c.appendChild(info);
+    pScreen.appendChild(c);
+    var pts = el("p", "empty", "Thân thiết: " + f.pts + " điểm. Đạt 3 tim nhận 100 xu, đạt 5 tim nhận 300 xu."); pScreen.appendChild(pts);
+    pScreen.appendChild(el("h3", "lbl", "Tặng quà từ balo"));
+    var names = Object.keys(save.inv).filter(function (k) { return save.inv[k] > 0; }), g = el("div", "pgrid");
+    if (!names.length) g.appendChild(el("p", "empty", "Balo trống. Hãy đi kiếm quà tặng bạn nhé."));
+    names.forEach(function (k) {
+      var row = el("div", "item"), nm = el("div", "name", k + " x" + save.inv[k]); nm.appendChild(el("small", null, "+" + giftPts(k) + " điểm thân thiết"));
+      var b = el("button", "btn sun", "Tặng"); b.type = "button"; b.addEventListener("click", function () { gift(id, k); });
+      row.appendChild(nm); row.appendChild(b); g.appendChild(row);
+    });
+    pScreen.appendChild(g);
+  }
+  function giftPts(name) { return clamp(Math.round((VALUE[name] || 1) / 2), 8, 40); }
+  function gift(id, name) {
+    var f = save.friends[id]; if (!f || !save.inv[name]) return;
+    save.inv[name]--; if (save.inv[name] <= 0) delete save.inv[name];
+    var before = hearts(id); f.pts += giftPts(name); gainXp(3);
+    var n = npcById(id), after = hearts(id);
+    toast("Đã tặng " + name + " cho " + n.name + ". " + n.name + " rất vui!");
+    if (after >= 3 && !f.r3) { f.r3 = true; save.coins += 100; toast("Quà tình bạn: +100 xu!"); }
+    if (after >= 5 && !f.r5) { f.r5 = true; save.coins += 300; toast("Bạn thân rồi! Quà: +300 xu."); }
+    if (after > before) sparkle(n.x, n.y - 40, "#ff5d8f", 16);
+    persist(); hud(); renderPhone();
+  }
+
+  function renderProfile() {
+    var l = level(), cur = Math.pow(l - 1, 2) * 25, next = Math.pow(l, 2) * 25, pct = clamp((save.xp - cur) / (next - cur), 0, 1);
+    var titles = l < 3 ? "Người mới đến" : l < 6 ? "Thợ câu tập sự" : l < 10 ? "Cư dân thân thiện" : "Huyền thoại của làng";
+    var top = el("div", "card prof"), pc = el("canvas"); pc.width = 192; pc.height = 224; top.appendChild(pc);
+    var info = el("div"); info.style.minWidth = "0";
+    var nm = el("h2", "ph1", save.name); nm.style.margin = "0"; info.appendChild(nm);
+    info.appendChild(el("div", "empty", titles)); info.lastChild.style.margin = "2px 0 6px";
+    info.appendChild(el("div", null, "Cấp " + l)); info.lastChild.style.fontWeight = "600";
+    var bar = el("div", "bar"), fill = el("b"); fill.style.width = Math.round(pct * 100) + "%"; bar.appendChild(fill); info.appendChild(bar);
+    info.appendChild(el("div", "empty", save.xp + " / " + next + " XP")); info.lastChild.style.margin = "4px 0 0";
+    top.appendChild(info); pScreen.appendChild(top);
+    drawPreview(pc);
+
+    pScreen.appendChild(el("span", "lbl", "Tên hiển thị"));
+    var inp = el("input", "inp"); inp.type = "text"; inp.maxLength = 12; inp.value = save.name; inp.id = "nameInp"; inp.setAttribute("aria-label", "Tên hiển thị");
+    pScreen.appendChild(inp);
+    var sv = el("button", "btn sun", "Lưu tên"); sv.type = "button"; sv.style.marginTop = "8px";
+    sv.addEventListener("click", function () { var v = inp.value.trim().slice(0, 12); if (!v) { toast("Tên không được để trống."); return; } save.name = v; persist(); toast("Đã đổi tên thành " + v + "."); renderPhone(); });
+    pScreen.appendChild(sv);
+
+    var st = el("div", "card"); st.style.marginTop = "12px";
+    [["Mã bạn bè", save.fcode], ["Bạn bè", friendCount() + " người"], ["Côn trùng đã bắt", save.stats.bugs], ["Cá đã câu", save.stats.fish], ["Đồ đã nhặt", save.stats.picks], ["Món đã tái chế", save.stats.recycled], ["Xu kiếm được", save.stats.earned], ["Điểm xanh", save.eco], ["Khu vực đã đến", Object.keys(save.visited).length + "/3"], ["Ngày tham gia", new Date(save.joined).toLocaleDateString("vi-VN")]].forEach(function (r) {
+      var d = el("div", "kv"); d.appendChild(el("span", null, r[0])); d.appendChild(el("b", null, String(r[1]))); st.appendChild(d);
+    });
+    pScreen.appendChild(st);
+    var rp = el("button", "btn ghost", "Xem lại phần mở đầu"); rp.type = "button"; rp.style.cssText = "width:100%;margin-top:12px";
+    rp.addEventListener("click", function () { closePhone(); startIntro(true); }); pScreen.appendChild(rp);
+  }
+  function drawPreview(pc) {
+    var g = pc.getContext("2d"), sh = byId(SHIRTS, save.eq.shirt);
+    withCtx(g, function () {
+      g.clearRect(0, 0, pc.width, pc.height); g.save(); g.translate(pc.width / 2 - (save.eq.pet ? 18 : 0), 190); g.scale(2.6, 2.6);
+      drawAvatar({ x: 0, y: 0, face: 1, walk: 0, moving: false, shirt: sh ? sh.color : "#ff7a6b", hair: "#5b3a29", hat: save.eq.hat, swingT: 0 }); g.restore();
+      if (save.eq.pet) { g.save(); g.translate(pc.width / 2 + 40, 196); g.scale(2.2, 2.2); var o = { x: pet.x, y: pet.y, face: pet.face, moving: pet.moving }; pet.x = 0; pet.y = 0; pet.face = -1; pet.moving = false; drawPet(); pet.x = o.x; pet.y = o.y; pet.face = o.face; pet.moving = o.moving; g.restore(); }
+    });
+  }
+
+  function renderCode() {
+    pScreen.appendChild(el("h2", "ph1", "Nhập code"));
+    pScreen.appendChild(el("p", "empty", "Nhập mã quà tặng để nhận phần thưởng. Mỗi mã dùng được một lần."));
+    var inp = el("input", "inp"); inp.type = "text"; inp.maxLength = 16; inp.placeholder = "Ví dụ: XINCHAO"; inp.id = "codeInp"; inp.setAttribute("aria-label", "Mã quà tặng"); inp.autocapitalize = "characters"; inp.autocomplete = "off";
+    pScreen.appendChild(inp);
+    var b = el("button", "btn sun", "Nhận quà"); b.type = "button"; b.style.cssText = "width:100%;margin-top:8px";
+    function redeem() {
+      var c = inp.value.trim().toUpperCase().replace(/[^A-Z0-9]/g, ""); if (!c) { toast("Hãy nhập một mã."); return; }
+      var allCodes = getAllCodes();
+      var d = allCodes[c]; if (!d) { toast("Mã không đúng hoặc đã hết hạn. Kiểm tra lại nhé."); return; }
+      if (save.codes[c]) { toast("Bạn đã dùng mã này rồi."); return; }
+      save.codes[c] = true;
+      if (d.coins) save.coins += Number(d.coins);
+      if (d.eco) save.eco += Number(d.eco);
+      if (d.inv) Object.keys(d.inv).forEach(function (k) { addItem(k, Number(d.inv[k])); });
+      if (d.item) save.owned[d.item] = true;
+      persist(); hud(); toast("Thành công! Nhận: " + (d.msg || "Quà sự kiện") + "."); renderPhone();
+    }
+    b.addEventListener("click", redeem); inp.addEventListener("keydown", function (e) { if (e.key === "Enter") redeem(); });
+    pScreen.appendChild(b);
+    var used = Object.keys(save.codes);
+    pScreen.appendChild(el("span", "lbl", "Mã đã dùng"));
+    if (!used.length) pScreen.appendChild(el("p", "empty", "Chưa có mã nào."));
+    var allCodesNow = getAllCodes();
+    used.forEach(function (c) { var r = el("div", "kv"); r.appendChild(el("span", null, c)); r.appendChild(el("b", null, allCodesNow[c] ? (allCodesNow[c].msg || "") : "Đã nhận")); pScreen.appendChild(r); });
+  }
+
+  function ecoPts(n) { return (n === "Chiếc giày cũ" || n === "Chiếc dép rách") ? 6 : Math.max(1, Math.round((VALUE[n] || 1) / 4)); }
+  function recycleItem(n, all) {
+    var q = save.inv[n] || 0; if (!q) return; var k = all ? q : 1, pts = ecoPts(n) * k;
+    save.inv[n] -= k; if (save.inv[n] <= 0) delete save.inv[n];
+    save.eco += pts; save.stats.recycled += k; gainXp(k); persist(); hud(); toast("Tái chế " + k + " " + n + ": +" + pts + " điểm xanh.");
+  }
+  function renderRecycle() {
+    pScreen.appendChild(el("h2", "ph1", "Tái chế"));
+    var top = el("div", "card"); top.appendChild(el("div", null, "Điểm xanh: " + save.eco)); top.firstChild.style.cssText = "font-family:var(--display);font-weight:800;font-size:1.3rem;color:#2f9b5d"; top.appendChild(el("div", "empty", "Biến đồ thừa trong balo thành điểm xanh, rồi đổi lấy đồ độc quyền.")); top.lastChild.style.margin = "4px 0 0"; pScreen.appendChild(top);
+    pScreen.appendChild(el("span", "lbl", "Đồ trong balo"));
+    var names = Object.keys(save.inv).filter(function (k) { return save.inv[k] > 0; }), g = el("div", "pgrid");
+    if (!names.length) g.appendChild(el("p", "empty", "Balo trống. Câu cá hoặc nhặt đồ để có thứ tái chế."));
+    names.forEach(function (k) {
+      var row = el("div", "item"), nm = el("div", "name", k + " x" + save.inv[k]); nm.appendChild(el("small", null, "+" + ecoPts(k) + " điểm xanh mỗi món"));
+      var b1 = el("button", "btn green", "1"); b1.type = "button"; b1.title = "Tái chế 1 món"; b1.addEventListener("click", function () { recycleItem(k, false); renderPhone(); });
+      var b2 = el("button", "btn green", "Hết"); b2.type = "button"; b2.title = "Tái chế tất cả"; b2.addEventListener("click", function () { recycleItem(k, true); renderPhone(); });
+      row.appendChild(nm); row.appendChild(b1); row.appendChild(b2); g.appendChild(row);
+    });
+    pScreen.appendChild(g);
+    pScreen.appendChild(el("span", "lbl", "Đổi quà"));
+    var g2 = el("div", "pgrid");
+    SWAP.forEach(function (s) {
+      var info = s.box ? null : itemInfo(s.id), owned = info && save.owned[s.id];
+      var row = el("div", "item"), chip = el("div", "chip"); chip.style.background = info ? info.color : "#ffd23f";
+      var nm = el("div", "name", s.box ? s.name : info.name); nm.appendChild(el("small", null, s.box ? "Nhận xu hoặc món hiếm ngẫu nhiên" : (s.id.indexOf("hat_") === 0 ? "Mũ" : "Áo")));
+      var b = el("button", "btn", owned ? "Đã có" : s.cost + " điểm"); b.type = "button"; b.disabled = !!owned;
+      b.addEventListener("click", function () {
+        if (save.eco < s.cost) { toast("Chưa đủ điểm xanh."); return; }
+        save.eco -= s.cost;
+        if (s.box) {
+          var r = Math.random();
+          if (r < 0.55) { var c = Math.round(rand(80, 250)); save.coins += c; toast("Hộp quà: +" + c + " xu!"); }
+          else { var it = pick(["Cá koi", "Bọ cánh vàng", "Ngọc trai", "Nấm xanh", "Cua vàng"]); addItem(it); toast("Hộp quà: bạn nhận được " + it + "!"); }
+        } else { save.owned[s.id] = true; toast("Đã đổi " + info.name + "! Mặc thử trong Balo."); }
+        persist(); hud(); renderPhone();
       });
-      table.appendChild(tr);
+      row.appendChild(chip); row.appendChild(nm); row.appendChild(b); g2.appendChild(row);
     });
+    pScreen.appendChild(g2);
   }
 
-  function renderShopTable(overrides) {
-    var st = $("shopTable");
-    st.innerHTML = "";
-    SHOP_ITEMS.forEach(function (it) {
-      var val = typeof overrides[it.id] === "number" ? overrides[it.id] : it.def;
-      var tr = document.createElement("tr");
-      tr.innerHTML = '<td><strong>' + esc(it.name) + '</strong></td>' +
-        '<td>' + esc(it.type) + '</td>' +
-        '<td>' + it.def + ' xu</td>' +
-        '<td><input class="inp shop-price-inp" data-id="' + it.id + '" type="number" min="0" value="' + val + '" style="max-width:120px"></td>';
-      st.appendChild(tr);
-    });
-  }
-
-  // Actions: Config
-  $("saveAnnBtn").addEventListener("click", function () {
-    var curId = (state.config.announcement && state.config.announcement.id) || 1;
-    var payload = {
-      active: $("annActive").checked,
-      text: $("annText").value.trim(),
-      id: curId
-    };
-    fbReq("/config/announcement", "PUT", payload).then(function () {
-      toast("Đã lưu cấu hình thông báo!");
-      loadAll();
-    });
-  });
-
-  $("pushAnnBtn").addEventListener("click", function () {
-    $("annActive").checked = true;
-    var payload = {
-      active: true,
-      text: $("annText").value.trim(),
-      id: Date.now()
-    };
-    if (!payload.text) { toast("Vui lòng nhập nội dung thông báo."); return; }
-    fbReq("/config/announcement", "PUT", payload).then(function () {
-      toast("Đã phát thông báo popup tới toàn bộ người chơi!");
-      loadAll();
-    });
-  });
-
-  $("saveServerBtn").addEventListener("click", function () {
-    var mult = {
-      coins: Math.max(0.5, Number($("multCoins").value) || 1),
-      xp: Math.max(0.5, Number($("multXp").value) || 1)
-    };
-    var maint = {
-      active: $("maintActive").checked,
-      message: $("maintMsg").value.trim() || "Server đang bảo trì, vui lòng quay lại sau!"
-    };
-    Promise.all([
-      fbReq("/config/multipliers", "PUT", mult),
-      fbReq("/config/maintenance", "PUT", maint)
-    ]).then(function () {
-      toast("Đã cập nhật cấu hình Server!");
-      loadAll();
-    });
-  });
-
-  // Actions: Beta keys
-  $("addBetaBtn").addEventListener("click", function () {
-    var name = $("bName").value.trim();
-    var key = $("bCode").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "");
-    var limit = Math.floor(Number($("bLimit").value));
-    if (!name) { toast("Vui lòng nhập tên Beta Key."); return; }
-    if (!Number.isFinite(limit) || limit < 1) { toast("Số lượt phải từ 1 trở lên."); return; }
-    if (!key) {
-      var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      key = "PTG-";
-      for (var i = 0; i < 10; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+  function renderMail() {
+    pScreen.appendChild(el("h2", "ph1", "Hộp thư hệ thống"));
+    var keys = Object.keys(playerMail || {}).sort(function (a, b) { return (playerMail[b].time || 0) - (playerMail[a].time || 0); });
+    if (!keys.length) {
+      pScreen.appendChild(el("p", "empty", "Chưa có thư nào từ quản trị viên."));
+      return;
     }
-    if (state.betaKeys && state.betaKeys[key]) { toast("Beta Key này đã tồn tại."); return; }
-    fbReq("/betaKeys/" + encodeURIComponent(key), "PUT", {
-      name: name, limit: limit, used: 0, active: true, devices: {}, createdAt: Date.now()
-    }).then(function () {
-      toast("Đã tạo Beta Key " + key + "!");
-      $("bName").value = ""; $("bCode").value = "";
-      loadAll();
-    }).catch(function () { toast("Không thể tạo Beta Key. Kiểm tra kết nối Firebase."); });
-  });
-
-  // Actions: Giftcodes
-  $("addCodeBtn").addEventListener("click", function () {
-    var code = $("cCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
-    if (!code) { toast("Vui lòng nhập mã giftcode."); return; }
-    var coins = Math.max(0, Number($("cCoins").value) || 0);
-    var eco = Math.max(0, Number($("cEco").value) || 0);
-    var item = $("cItem").value;
-    var msg = $("cMsg").value.trim();
-    if (!msg) {
-      var parts = [];
-      if (coins) parts.push("+" + coins + " xu");
-      if (eco) parts.push("+" + eco + " điểm xanh");
-      if (item) parts.push("Vật phẩm đặc biệt");
-      msg = parts.join(", ") || "Quà sự kiện";
-    }
-    var payload = { active: true, coins: coins, eco: eco, msg: msg };
-    if (item) payload.item = item;
-    fbReq("/config/codes/" + encodeURIComponent(code), "PUT", payload).then(function () {
-      toast("Đã lưu giftcode " + code + "!");
-      $("cCode").value = "";
-      $("cMsg").value = "";
-      loadAll();
+    var g = el("div", "pgrid");
+    keys.forEach(function (mid) {
+      var m = playerMail[mid];
+      if (!m) return;
+      var card = el("div", "card");
+      var h = el("div", null, m.title || "Quà từ Admin");
+      h.style.cssText = "font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink)";
+      card.appendChild(h);
+      if (m.msg) { var p = el("div", "empty", m.msg); p.style.margin = "4px 0 8px"; card.appendChild(p); }
+      var rewards = [];
+      if (m.coins) rewards.push("+" + m.coins + " xu");
+      if (m.eco) rewards.push("+" + m.eco + " điểm xanh");
+      if (m.item) { var inf = itemInfo(m.item); rewards.push(inf ? inf.name : m.item); }
+      if (rewards.length) {
+        var rw = el("div", null, "Đính kèm: " + rewards.join(", "));
+        rw.style.cssText = "font-size:.85rem;font-weight:600;color:#2f9b5d;margin-bottom:8px";
+        card.appendChild(rw);
+      }
+      if (rewards.length) {
+        var b = el("button", m.claimed ? "btn ghost" : "btn sun", m.claimed ? "Đã nhận" : "Nhận quà");
+        b.type = "button"; b.disabled = !!m.claimed;
+        b.addEventListener("click", function () {
+          if (m.claimed) return;
+          m.claimed = true;
+          if (m.coins) save.coins += Number(m.coins);
+          if (m.eco) save.eco += Number(m.eco);
+          if (m.item) save.owned[m.item] = true;
+          fbReq("/players/" + encodeURIComponent(save.pid) + "/mail/" + encodeURIComponent(mid), "PATCH", { claimed: true });
+          persist(); hud(); toast("Đã nhận quà từ hộp thư!"); renderPhone();
+        });
+        card.appendChild(b);
+      }
+      g.appendChild(card);
     });
-  });
-
-  // Actions: Shop
-  $("saveShopBtn").addEventListener("click", function () {
-    var overrides = {};
-    document.querySelectorAll(".shop-price-inp").forEach(function (inp) {
-      overrides[inp.getAttribute("data-id")] = Math.max(0, Math.round(Number(inp.value) || 0));
-    });
-    fbReq("/config/shopOverrides", "PUT", overrides).then(function () {
-      toast("Đã cập nhật bảng giá Tiệm Làng!");
-      loadAll();
-    });
-  });
-
-  // Actions: Mail
-  $("sendMailBtn").addEventListener("click", function () {
-    var target = $("mailTarget").value;
-    var title = $("mailTitle").value.trim() || "Quà từ Quản trị viên";
-    var msg = $("mailMsg").value.trim();
-    var coins = Math.max(0, Math.round(Number($("mailCoins").value) || 0));
-    var eco = Math.max(0, Math.round(Number($("mailEco").value) || 0));
-    var item = $("mailItem").value;
-
-    var mailId = "M-" + Date.now();
-    var mailObj = { title: title, msg: msg, coins: coins, eco: eco, claimed: false, time: Date.now() };
-    if (item) mailObj.item = item;
-
-    var targets = target === "ALL" ? Object.keys(state.players) : [target];
-    if (!targets.length) { toast("Không có người chơi nào để gửi."); return; }
-
-    Promise.all(targets.map(function (pid) {
-      return fbReq("/players/" + encodeURIComponent(pid) + "/mail/" + mailId, "PUT", mailObj);
-    })).then(function () {
-      toast("Đã gửi thư tới " + targets.length + " người chơi!");
-    });
-  });
-
-  // Modal: Edit Player
-  function openEditModal(p) {
-    editingPid = p.pid;
-    $("emTitle").textContent = "Quản lý: " + (p.name || "Bạn");
-    $("emSub").textContent = "ID: " + p.pid + " · Mã bạn bè: " + (p.fcode || "");
-    $("emCoins").value = p.coins || 0;
-    $("emEco").value = p.eco || 0;
-    $("emXp").value = p.xp || 0;
-    $("emGiveItem").value = "";
-    $("emBanBtn").textContent = p.banned ? "Mở khóa tài khoản" : "Khóa tài khoản";
-    $("editModal").hidden = false;
+    pScreen.appendChild(g);
   }
-  $("emClose").addEventListener("click", function () { $("editModal").hidden = true; });
-  $("editModal").addEventListener("pointerdown", function (e) { if (e.target === $("editModal")) $("editModal").hidden = true; });
 
-  $("emSaveBtn").addEventListener("click", function () {
-    if (!editingPid) return;
-    var cmd = {
-      ts: Date.now(),
-      setCoins: Math.max(0, Math.round(Number($("emCoins").value) || 0)),
-      setEco: Math.max(0, Math.round(Number($("emEco").value) || 0)),
-      setXp: Math.max(0, Math.round(Number($("emXp").value) || 0)),
-      note: $("emNote").value.trim()
-    };
-    var item = $("emGiveItem").value;
-    if (item) cmd.giveItem = item;
-    fbReq("/players/" + encodeURIComponent(editingPid), "PATCH", { adminCmd: cmd }).then(function () {
-      toast("Đã gửi lệnh cập nhật tới người chơi!");
-      $("editModal").hidden = true;
-      setTimeout(loadAll, 800);
+  function renderMap() {
+    pScreen.appendChild(el("h2", "ph1", "Bản đồ"));
+    pScreen.appendChild(el("p", "empty", "Đi bộ ra rìa khu vực để sang nơi khác, hoặc dùng bản đồ để di chuyển nhanh."));
+    var g = el("div", "pgrid");
+    [["village", "Phía trung tâm"], ["beach", "Phía đông của làng"], ["forest", "Phía nam của làng"]].forEach(function (z) {
+      var row = el("div", "item"), nm = el("div", "name", ZONE_NAMES[z[0]]); nm.appendChild(el("small", null, z[1] + (save.visited[z[0]] ? "" : " · chưa đến, thưởng 50 xu")));
+      var b = el("button", "btn", Z.id === z[0] ? "Đang ở đây" : "Đến đó"); b.type = "button"; b.disabled = Z.id === z[0];
+      b.addEventListener("click", function () { closePhone(); var sp = ZONES[z[0]].spawn; travel(z[0], sp[0], sp[1]); });
+      row.appendChild(nm); row.appendChild(b); g.appendChild(row);
     });
-  });
+    pScreen.appendChild(g);
+  }
 
-  $("emBanBtn").addEventListener("click", function () {
-    if (!editingPid) return;
-    var p = state.players[editingPid] || {};
-    var nextBan = !p.banned;
-    var reason = nextBan ? (prompt("Nhập lý do khóa tài khoản:", "Vi phạm quy định cộng đồng") || "Vi phạm quy định") : "";
-    fbReq("/players/" + encodeURIComponent(editingPid), "PATCH", { banned: nextBan, banReason: reason }).then(function () {
-      toast(nextBan ? "Đã khóa tài khoản!" : "Đã mở khóa tài khoản!");
-      $("editModal").hidden = true;
-      loadAll();
+  // ---------- drawing: props ----------
+  function drawTree(t) {
+    var s = t.s, p = Z.tp[t.hue < 0.5 ? 0 : Math.min(1, Z.tp.length - 1)]; ctx.save(); ctx.translate(t.x, t.y);
+    ctx.fillStyle = "rgba(0,0,0,.16)"; ell(ctx, 0, 2, 34 * s, 11 * s); ctx.fill();
+    if (t.kind === "palm") {
+      ctx.strokeStyle = "#b98a52"; ctx.lineWidth = 12 * s; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(14 * s, -50 * s, 6 * s, -96 * s); ctx.stroke();
+      ctx.save(); ctx.translate(6 * s, -96 * s);
+      for (var i = 0; i < 7; i++) { ctx.save(); ctx.rotate(-1.4 + i * 0.47); ctx.fillStyle = i % 2 ? p[0] : p[1]; ctx.beginPath(); ctx.ellipse(0, -30 * s, 9 * s, 34 * s, 0, 0, 6.3); ctx.fill(); ctx.restore(); }
+      ctx.fillStyle = "#8d5a3b"; ctx.beginPath(); ctx.arc(-4 * s, 4 * s, 5 * s, 0, 6.3); ctx.arc(6 * s, 6 * s, 5 * s, 0, 6.3); ctx.fill(); ctx.restore();
+    } else if (t.kind === "pine") {
+      ctx.fillStyle = "#6b4a30"; rr(ctx, -6 * s, -28 * s, 12 * s, 30 * s, 3); ctx.fill();
+      [[-26, 56, 0], [-52, 46, 1], [-76, 34, 0]].forEach(function (a) { ctx.fillStyle = p[a[2]]; ctx.beginPath(); ctx.moveTo(0, (a[0] - 34) * s); ctx.lineTo(a[1] * s, a[0] * s + 6 * s); ctx.lineTo(-a[1] * s, a[0] * s + 6 * s); ctx.closePath(); ctx.fill(); });
+    } else {
+      ctx.fillStyle = "#8d5a3b"; rr(ctx, -7 * s, -34 * s, 14 * s, 36 * s, 4); ctx.fill();
+      ctx.fillStyle = p[0]; ctx.beginPath(); ctx.arc(0, -62 * s, 32 * s, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.arc(-22 * s, -46 * s, 22 * s, 0, 6.3); ctx.fill(); ctx.beginPath(); ctx.arc(22 * s, -46 * s, 22 * s, 0, 6.3); ctx.fill();
+      ctx.fillStyle = p[1]; ctx.beginPath(); ctx.arc(-8 * s, -70 * s, 15 * s, 0, 6.3); ctx.fill();
+      if (t.hue > 0.75 && Z.id === "village") { ctx.fillStyle = "#ff6b6b"; [[-14, -52], [12, -66], [20, -44]].forEach(function (a) { ctx.beginPath(); ctx.arc(a[0] * s, a[1] * s, 4 * s, 0, 6.3); ctx.fill(); }); }
+    }
+    ctx.restore();
+  }
+  function drawHouse() {
+    var x = ZONES.village.house.x, y = ZONES.village.house.y, w = ZONES.village.house.w;
+    ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, x + w / 2, y + 122, w / 2 + 14, 14); ctx.fill();
+    ctx.fillStyle = "#fff6e0"; rr(ctx, x + 10, y + 56, w - 20, 64, 6); ctx.fill();
+    ctx.fillStyle = "#5a8fd6"; ctx.beginPath(); ctx.moveTo(x - 10, y + 62); ctx.lineTo(x + w / 2, y); ctx.lineTo(x + w + 10, y + 62); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#4a7bc0"; ctx.beginPath(); ctx.moveTo(x + w / 2, y); ctx.lineTo(x + w + 10, y + 62); ctx.lineTo(x + w / 2 + 20, y + 62); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#8d5a3b"; rr(ctx, x + w / 2 - 18, y + 74, 36, 46, 8); ctx.fill();
+    ctx.fillStyle = "#bfe6ff"; rr(ctx, x + 28, y + 74, 34, 28, 5); ctx.fill(); rr(ctx, x + w - 62, y + 74, 34, 28, 5); ctx.fill();
+  }
+  function drawShop() {
+    var sp = ZONES.village.shop, x = sp.x, y = sp.y, w = sp.w, i;
+    ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, x + w / 2, y + 152, w / 2 + 16, 15); ctx.fill();
+    ctx.fillStyle = "#fff3d6"; rr(ctx, x + 10, y + 70, w - 20, 80, 6); ctx.fill();
+    ctx.fillStyle = "#ff7a6b"; ctx.beginPath(); ctx.moveTo(x - 10, y + 76); ctx.lineTo(x + 30, y + 10); ctx.lineTo(x + w - 30, y + 10); ctx.lineTo(x + w + 10, y + 76); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#e8604f"; for (i = 0; i < 5; i += 2) { ctx.beginPath(); ctx.moveTo(x + 30 + i * 60, y + 10); ctx.lineTo(x + 60 + i * 60, y + 10); ctx.lineTo(x + 50 + i * 60, y + 76); ctx.lineTo(x + 20 + i * 60, y + 76); ctx.closePath(); ctx.fill(); }
+    ctx.fillStyle = "#ffd23f"; rr(ctx, x + w / 2 - 62, y + 22, 124, 34, 10); ctx.fill();
+    ctx.fillStyle = "#3a2a00"; ctx.font = "800 20px 'Baloo 2', sans-serif"; ctx.textAlign = "center"; ctx.fillText("TIỆM LÀNG", x + w / 2, y + 47);
+    for (i = 0; i < 10; i++) { ctx.fillStyle = i % 2 ? "#ffffff" : "#ff7a6b"; rr(ctx, x + 14 + i * 27.2, y + 86, 27.2, 22, 6); ctx.fill(); }
+    ctx.fillStyle = "#8d5a3b"; rr(ctx, x + w / 2 - 24, y + 108, 48, 42, 8); ctx.fill();
+    ctx.fillStyle = "#bfe6ff"; rr(ctx, x + 32, y + 114, 64, 30, 6); ctx.fill(); rr(ctx, x + w - 96, y + 114, 64, 30, 6); ctx.fill();
+  }
+  function drawFountain(t) {
+    var f = ZONES.village.fount, x = f.x, y = f.y;
+    ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, x, y + 8, 56, 22); ctx.fill();
+    ctx.fillStyle = "#cfd8e3"; ell(ctx, x, y, 50, 26); ctx.fill(); ctx.fillStyle = "#9fd8f2"; ell(ctx, x, y - 2, 40, 19); ctx.fill();
+    ctx.fillStyle = "#cfd8e3"; rr(ctx, x - 7, y - 42, 14, 38, 5); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.85)";
+    for (var i = 0; i < 6; i++) { var a = (t * 1.6 + i / 6) % 1; ctx.beginPath(); ctx.arc(x + Math.sin(i * 2.1) * 24 * a, y - 44 + a * 44 + Math.sin(a * 3.14) * -22, 3, 0, 6.3); ctx.fill(); }
+  }
+  function drawHut(h) {
+    var x = h[0], y = h[1], w = h[2];
+    ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, x + w / 2, y + 102, w / 2 + 12, 12); ctx.fill();
+    ctx.fillStyle = "#fff3d6"; rr(ctx, x + 8, y + 40, w - 16, 60, 5); ctx.fill();
+    for (var i = 0; i < 6; i++) { ctx.fillStyle = i % 2 ? "#ffffff" : "#ff7a6b"; ctx.fillRect(x + 8 + i * (w - 16) / 6, y + 40, (w - 16) / 6, 14); }
+    ctx.fillStyle = "#3bb8c9"; ctx.beginPath(); ctx.moveTo(x - 8, y + 44); ctx.lineTo(x + w / 2, y); ctx.lineTo(x + w + 8, y + 44); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#8d5a3b"; rr(ctx, x + w / 2 - 15, y + 62, 30, 38, 6); ctx.fill();
+    ctx.fillStyle = "#bfe6ff"; rr(ctx, x + 18, y + 62, 26, 20, 4); ctx.fill(); rr(ctx, x + w - 44, y + 62, 26, 20, 4); ctx.fill();
+  }
+  function drawUmbrella(x, y, c) {
+    ctx.fillStyle = "rgba(0,0,0,.12)"; ell(ctx, x, y, 38, 11); ctx.fill();
+    ctx.fillStyle = "#fff"; rr(ctx, x - 34, y - 6, 68, 14, 5); ctx.fill(); ctx.fillStyle = c; ctx.fillRect(x - 34 + 14, y - 6, 12, 14); ctx.fillRect(x - 34 + 40, y - 6, 12, 14);
+    ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y - 6); ctx.lineTo(x, y - 62); ctx.stroke();
+    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(x, y - 58, 40, Math.PI, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.beginPath(); ctx.arc(x, y - 58, 40, Math.PI * 1.25, Math.PI * 1.45); ctx.lineTo(x, y - 58); ctx.fill();
+  }
+  function drawCastle(x, y) {
+    ctx.fillStyle = "rgba(0,0,0,.12)"; ell(ctx, x, y + 4, 52, 12); ctx.fill();
+    ctx.fillStyle = "#ecc979"; rr(ctx, x - 40, y - 28, 80, 30, 4); ctx.fill();
+    [[-34, -50], [14, -50]].forEach(function (a) { ctx.fillRect(x + a[0], y + a[1], 20, 28); for (var k = 0; k < 3; k++) ctx.fillRect(x + a[0] + k * 8, y + a[1] - 6, 5, 7); });
+    ctx.fillStyle = "#d9b25f"; rr(ctx, x - 9, y - 18, 18, 20, 9); ctx.fill();
+    ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - 24, y - 50); ctx.lineTo(x - 24, y - 70); ctx.stroke(); ctx.fillStyle = "#ff7a6b"; ctx.beginPath(); ctx.moveTo(x - 24, y - 70); ctx.lineTo(x - 8, y - 65); ctx.lineTo(x - 24, y - 60); ctx.fill();
+  }
+  function drawTreeHouse(h) {
+    var x = h[0], y = h[1];
+    ctx.fillStyle = "rgba(0,0,0,.18)"; ell(ctx, x + 90, y + 182, 90, 16); ctx.fill();
+    ctx.fillStyle = "#7a4f33"; rr(ctx, x + 66, y + 80, 48, 100, 12); ctx.fill();
+    ctx.fillStyle = "#2c6e46"; ctx.beginPath(); ctx.arc(x + 90, y + 40, 78, 0, 6.3); ctx.fill(); ctx.fillStyle = "#3a8b58"; ctx.beginPath(); ctx.arc(x + 60, y + 30, 40, 0, 6.3); ctx.arc(x + 128, y + 44, 36, 0, 6.3); ctx.fill();
+    ctx.fillStyle = "#c98b4f"; rr(ctx, x + 38, y + 84, 104, 48, 8); ctx.fill();
+    ctx.fillStyle = "#e8604f"; ctx.beginPath(); ctx.moveTo(x + 30, y + 90); ctx.lineTo(x + 90, y + 54); ctx.lineTo(x + 150, y + 90); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#ffe9a8"; rr(ctx, x + 52, y + 96, 24, 22, 5); ctx.fill(); rr(ctx, x + 104, y + 96, 24, 22, 5); ctx.fill();
+    ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 80, y + 132); ctx.lineTo(x + 70, y + 178); ctx.moveTo(x + 100, y + 132); ctx.lineTo(x + 110, y + 178); ctx.stroke();
+    for (var i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(x + 76 - i * 2, y + 142 + i * 10); ctx.lineTo(x + 104 + i * 2, y + 142 + i * 10); ctx.stroke(); }
+  }
+  function drawRing(x, y) {
+    for (var i = 0; i < 12; i++) { var a = i / 12 * 6.283, mx = x + Math.cos(a) * 90, my = y + Math.sin(a) * 60; drawMushroom(mx, my, i % 3 === 0 ? "#e63946" : i % 3 === 1 ? "#ffc107" : "#ffffff", 0.8); }
+  }
+  function drawLog(x, y) {
+    ctx.fillStyle = "rgba(0,0,0,.15)"; ell(ctx, x, y + 6, 46, 10); ctx.fill();
+    ctx.fillStyle = "#8d5a3b"; rr(ctx, x - 44, y - 16, 88, 24, 12); ctx.fill(); ctx.fillStyle = "#c98b4f"; ell(ctx, x + 40, y - 4, 8, 12); ctx.fill(); ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 1.5; ell(ctx, x + 40, y - 4, 4, 7); ctx.stroke();
+    drawMushroom(x - 20, y - 14, "#e63946", 0.7);
+  }
+  function drawMushroom(x, y, c, s) {
+    s = s || 1; ctx.save(); ctx.translate(x, y);
+    ctx.fillStyle = "rgba(0,0,0,.15)"; ell(ctx, 0, 1, 10 * s, 4 * s); ctx.fill();
+    ctx.fillStyle = "#fff4dc"; rr(ctx, -4 * s, -14 * s, 8 * s, 15 * s, 3); ctx.fill();
+    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(0, -13 * s, 11 * s, Math.PI, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.beginPath(); ctx.arc(-4 * s, -17 * s, 2 * s, 0, 6.3); ctx.arc(4 * s, -15 * s, 1.7 * s, 0, 6.3); ctx.arc(0, -21 * s, 1.6 * s, 0, 6.3); ctx.fill();
+    ctx.restore();
+  }
+  function drawShell(x, y, c) {
+    ctx.save(); ctx.translate(x, y); ctx.fillStyle = "rgba(0,0,0,.12)"; ell(ctx, 0, 2, 11, 4); ctx.fill();
+    ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(0, 2); ctx.arc(0, 2, 12, Math.PI * 1.1, Math.PI * 1.9); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.3; for (var i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(Math.sin(i * 0.4) * 12, 2 - Math.cos(i * 0.4) * 12); ctx.stroke(); }
+    ctx.restore();
+  }
+  function drawLamp(l) {
+    ctx.fillStyle = "#5d6b82"; ctx.fillRect(l[0] - 3, l[1] - 54, 6, 54); ctx.fillStyle = "#fff0a8"; ctx.beginPath(); ctx.arc(l[0], l[1] - 58, 8, 0, 6.3); ctx.fill();
+    ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, l[0], l[1], 9, 4); ctx.fill();
+  }
+
+  function drawBug(b) {
+    var t = b.t, f = Math.sin(b.ph), sh = t.shape;
+    ctx.save();
+    if (sh !== "firefly") { ctx.fillStyle = "rgba(0,0,0,.14)"; ell(ctx, b.x, b.y, 8, 3); ctx.fill(); }
+    ctx.translate(b.x, b.y - b.z);
+    if (sh === "butterfly") {
+      var wv = 4 + Math.abs(f) * 9; ctx.fillStyle = t.c; ell(ctx, -wv * 0.7, -2, wv, 8); ctx.fill(); ell(ctx, wv * 0.7, -2, wv, 8); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.55)"; ell(ctx, -wv * 0.7, -2, wv * 0.4, 3); ctx.fill(); ell(ctx, wv * 0.7, -2, wv * 0.4, 3); ctx.fill();
+      ctx.fillStyle = "#3a2e39"; rr(ctx, -1.5, -8, 3, 16, 1.5); ctx.fill();
+    } else if (sh === "dragonfly") {
+      var w2 = 6 + Math.abs(f) * 8; ctx.fillStyle = "rgba(220,245,255,.8)"; ell(ctx, -w2 * 0.8, -3, w2, 3); ctx.fill(); ell(ctx, w2 * 0.8, -3, w2, 3); ctx.fill(); ell(ctx, -w2 * 0.8, 2, w2, 3); ctx.fill(); ell(ctx, w2 * 0.8, 2, w2, 3); ctx.fill();
+      ctx.fillStyle = t.c; rr(ctx, -2, -10, 4, 22, 2); ctx.fill();
+    } else if (sh === "ladybug") {
+      ctx.fillStyle = t.c; ell(ctx, 0, 0, 7, 6); ctx.fill(); ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(0, -6, 3, 0, 6.3); ctx.fill(); ctx.fillRect(-0.5, -5, 1, 11); ctx.beginPath(); ctx.arc(-3, 0, 1.2, 0, 6.3); ctx.arc(3, 1, 1.2, 0, 6.3); ctx.fill();
+    } else if (sh === "beetle") {
+      ctx.fillStyle = "#e0a800"; ell(ctx, 0, 0, 8, 7); ctx.fill(); ctx.fillStyle = t.c; ell(ctx, 0, -1, 6, 5); ctx.fill(); ctx.fillStyle = "rgba(255,255,255,.7)"; ell(ctx, -2, -3, 2, 1.4); ctx.fill(); ctx.fillStyle = "#6b4b00"; ctx.beginPath(); ctx.arc(0, -7, 2.6, 0, 6.3); ctx.fill();
+    } else if (sh === "firefly") {
+      var pu = 0.55 + 0.45 * Math.sin(b.ph * 0.7), g = ctx.createRadialGradient(0, 0, 0, 0, 0, 20); g.addColorStop(0, "rgba(230,255,140," + (0.75 * pu) + ")"); g.addColorStop(1, "rgba(230,255,140,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 20, 0, 6.3); ctx.fill(); ctx.fillStyle = "#3a3a2a"; ell(ctx, 0, -2, 2.4, 4); ctx.fill(); ctx.fillStyle = "#fffbc8"; ctx.beginPath(); ctx.arc(0, 2, 2.8 + pu, 0, 6.3); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.6)"; ell(ctx, -3.5, -2, 3, 1.6); ctx.fill(); ell(ctx, 3.5, -2, 3, 1.6); ctx.fill();
+    } else if (sh === "mantis") {
+      ctx.strokeStyle = t.c; ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(0, 8); ctx.lineTo(0, -6); ctx.stroke(); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(-6, -9); ctx.lineTo(-4, -13); ctx.moveTo(0, -4); ctx.lineTo(6, -9); ctx.lineTo(4, -13); ctx.stroke();
+      ctx.fillStyle = t.c; ctx.beginPath(); ctx.arc(0, -8, 2.6, 0, 6.3); ctx.fill();
+    } else if (sh === "rhino") {
+      ctx.fillStyle = t.c; ell(ctx, 0, 0, 9, 7); ctx.fill(); ctx.beginPath(); ctx.arc(0, -8, 4, 0, 6.3); ctx.fill(); ctx.strokeStyle = t.c; ctx.lineWidth = 2.4; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(0, -18); ctx.lineTo(-3, -20); ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,.3)"; ell(ctx, -2, -2, 3, 2); ctx.fill();
+    } else if (sh === "crab") {
+      ctx.fillStyle = t.c; ell(ctx, 0, 0, 9, 6); ctx.fill(); ctx.beginPath(); ctx.arc(-11, -6, 4, 0, 6.3); ctx.arc(11, -6, 4, 0, 6.3); ctx.fill();
+      ctx.strokeStyle = t.c; ctx.lineWidth = 1.6; for (var i = -1; i <= 1; i += 2) for (var k = 0; k < 3; k++) { ctx.beginPath(); ctx.moveTo(i * 6, 1 + k * 2); ctx.lineTo(i * (12 + f * 1.5), 5 + k * 2); ctx.stroke(); }
+      ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(-3, -5, 1.4, 0, 6.3); ctx.arc(3, -5, 1.4, 0, 6.3); ctx.fill();
+    } else {
+      ctx.fillStyle = t.c; ctx.beginPath(); for (var j = 0; j < 10; j++) { var rad = j % 2 ? 4.5 : 11, an = -1.57 + j * 0.628; ctx.lineTo(Math.cos(an) * rad, Math.sin(an) * rad); } ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(255,255,255,.5)"; ctx.beginPath(); ctx.arc(0, 0, 2, 0, 6.3); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawHat(id, f) {
+    ctx.save(); ctx.translate(0, -42);
+    if (id === "hat_straw") { ctx.fillStyle = "#e9c46a"; ell(ctx, 0, -9, 21, 6); ctx.fill(); ctx.beginPath(); ctx.arc(0, -10, 11, Math.PI, 0); ctx.fill(); ctx.fillStyle = "#e63946"; ctx.fillRect(-11, -12, 22, 3); }
+    else if (id === "hat_beanie") { ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.arc(0, -6, 13.5, Math.PI, 0); ctx.fill(); ctx.fillStyle = "#fff"; rr(ctx, -14, -8, 28, 6, 3); ctx.fill(); ctx.beginPath(); ctx.arc(0, -21, 4.5, 0, 6.3); ctx.fill(); }
+    else if (id === "hat_cap") { ctx.fillStyle = "#3a86ff"; ctx.beginPath(); ctx.arc(0, -6, 13.5, Math.PI, 0); ctx.fill(); ctx.fillStyle = "#2a6bd6"; rr(ctx, f > 0 ? 2 : -20, -8, 18, 5, 2.5); ctx.fill(); }
+    else if (id === "hat_bow") { ctx.fillStyle = "#ff7eb6"; ctx.beginPath(); ctx.moveTo(-9 * f, -13); ctx.lineTo(-20 * f, -20); ctx.lineTo(-20 * f, -8); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(-9 * f, -13); ctx.lineTo(2 * f, -20); ctx.lineTo(2 * f, -8); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#e0558f"; ctx.beginPath(); ctx.arc(-9 * f, -13, 3.5, 0, 6.3); ctx.fill(); }
+    else if (id === "hat_crown") { ctx.fillStyle = "#ffd23f"; ctx.beginPath(); ctx.moveTo(-11, -9); ctx.lineTo(-12, -22); ctx.lineTo(-5, -15); ctx.lineTo(0, -24); ctx.lineTo(5, -15); ctx.lineTo(12, -22); ctx.lineTo(11, -9); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.arc(0, -14, 2.4, 0, 6.3); ctx.fill(); }
+    else if (id === "hat_leaf") { ctx.fillStyle = "#3f9a60"; ctx.beginPath(); ctx.ellipse(-6, -14, 6, 12, -0.6, 0, 6.3); ctx.fill(); ctx.fillStyle = "#5bbf7a"; ctx.beginPath(); ctx.ellipse(6, -15, 6, 12, 0.6, 0, 6.3); ctx.fill(); ctx.fillStyle = "#4fa86a"; ctx.beginPath(); ctx.ellipse(0, -17, 5, 11, 0, 0, 6.3); ctx.fill(); ctx.strokeStyle = "#2f7d4e"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(0, -25); ctx.stroke(); }
+    else if (id === "hat_flower") { var cols = ["#ff9ec4", "#ffe066", "#ffffff", "#ff9ec4", "#ffe066", "#ffffff"]; for (var i = 0; i < 6; i++) { var a = Math.PI + (i + 0.5) * Math.PI / 6; ctx.fillStyle = cols[i]; ctx.beginPath(); ctx.arc(Math.cos(a) * 12.5, -2 + Math.sin(a) * 12.5, 4, 0, 6.3); ctx.fill(); ctx.fillStyle = "#f4a259"; ctx.beginPath(); ctx.arc(Math.cos(a) * 12.5, -2 + Math.sin(a) * 12.5, 1.3, 0, 6.3); ctx.fill(); } }
+    ctx.restore();
+  }
+  function drawAvatar(o) {
+    var f = o.face || 1, ls = o.moving ? Math.sin(o.walk) * 4 : 0, bob = o.moving ? Math.abs(Math.sin(o.walk)) * 2.5 : 0;
+    ctx.save(); ctx.translate(o.x, o.y);
+    ctx.fillStyle = "rgba(0,0,0,.18)"; ell(ctx, 0, 0, 15, 6); ctx.fill();
+    ctx.fillStyle = "#4a4e69"; ctx.fillRect(-7, -12 - Math.max(0, ls), 5, 12); ctx.fillRect(2, -12 - Math.max(0, -ls), 5, 12);
+    ctx.translate(0, -bob);
+    ctx.fillStyle = o.shirt; rr(ctx, -10, -32, 20, 22, 7); ctx.fill(); rr(ctx, -15, -30 + ls * 0.4, 5, 14, 2.5); ctx.fill(); rr(ctx, 10, -30 - ls * 0.4, 5, 14, 2.5); ctx.fill();
+    ctx.fillStyle = "#ffd9b8"; ctx.beginPath(); ctx.arc(-12.5, -15 + ls * 0.4, 3, 0, 6.3); ctx.arc(12.5, -15 - ls * 0.4, 3, 0, 6.3); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, -42, 13, 0, 6.3); ctx.fill();
+    ctx.fillStyle = o.hair; ctx.beginPath(); ctx.arc(0, -43, 13.6, Math.PI, 0); ctx.fill(); ctx.beginPath(); ctx.arc(-9 * f, -40, 5.5, 0, 6.3); ctx.fill();
+    ctx.fillStyle = "#2b2d42"; ctx.beginPath(); ctx.arc(-4 + f * 2.2, -41, 1.9, 0, 6.3); ctx.arc(4 + f * 2.2, -41, 1.9, 0, 6.3); ctx.fill();
+    ctx.fillStyle = "rgba(255,120,140,.45)"; ctx.beginPath(); ctx.arc(-7.5 + f * 2, -37, 2.4, 0, 6.3); ctx.arc(7.5 + f * 2, -37, 2.4, 0, 6.3); ctx.fill();
+    ctx.strokeStyle = "#b5524a"; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.arc(f * 2.2, -37, 2.6, 0.2, 2.9); ctx.stroke();
+    if (o.hat) drawHat(o.hat, f);
+    if (o.swingT > 0) {
+      var u = 1 - o.swingT / 0.4;
+      ctx.save(); ctx.translate(f * 10, -24); ctx.scale(f, 1); ctx.rotate(-1.4 + u * 2.8);
+      ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -34); ctx.stroke();
+      ctx.strokeStyle = "#5d6b82"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -44, 10, 0, 6.3); ctx.stroke();
+      ctx.strokeStyle = "rgba(93,107,130,.45)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-10, -44); ctx.lineTo(10, -44); ctx.moveTo(0, -54); ctx.lineTo(0, -34); ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  function drawPet() {
+    var k = byId(PETS, save.eq.pet); if (!k) return;
+    var f = pet.face, hop = pet.moving ? Math.abs(Math.sin(pet.walk)) * 4 : 0;
+    ctx.save(); ctx.translate(pet.x, pet.y);
+    ctx.fillStyle = "rgba(0,0,0,.18)"; ell(ctx, 0, 0, 13, 5); ctx.fill(); ctx.translate(0, -hop);
+    ctx.strokeStyle = k.color; ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(-f * 10, -10); ctx.quadraticCurveTo(-f * 22, -22 + Math.sin(pet.walk * 0.8) * 4, -f * 18, -26); ctx.stroke();
+    ctx.fillStyle = k.color; ell(ctx, 0, -9, 12, 8); ctx.fill(); ctx.beginPath(); ctx.arc(f * 10, -17, 8, 0, 6.3); ctx.fill();
+    var ear = k.kind === "dog" ? "#9a6b3f" : "#ffd1dc";
+    if (k.kind === "cat") { ctx.beginPath(); ctx.moveTo(f * 4, -22); ctx.lineTo(f * 6, -31); ctx.lineTo(f * 10, -23); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(f * 11, -23); ctx.lineTo(f * 15, -31); ctx.lineTo(f * 17, -21); ctx.closePath(); ctx.fill(); }
+    else if (k.kind === "dog") { ctx.fillStyle = ear; ell(ctx, f * 3, -17, 3.5, 7); ctx.fill(); ell(ctx, f * 17, -16, 3.5, 7); ctx.fill(); }
+    else { ctx.fillStyle = k.color; ell(ctx, f * 6, -29, 3.2, 9); ctx.fill(); ell(ctx, f * 13, -29, 3.2, 9); ctx.fill(); ctx.fillStyle = ear; ell(ctx, f * 6, -29, 1.5, 6); ctx.fill(); ell(ctx, f * 13, -29, 1.5, 6); ctx.fill(); }
+    ctx.fillStyle = "#2b2d42"; ctx.beginPath(); ctx.arc(f * 12, -18, 1.4, 0, 6.3); ctx.arc(f * 7, -18, 1.4, 0, 6.3); ctx.fill(); ctx.fillStyle = "#ff8fab"; ctx.beginPath(); ctx.arc(f * 15, -15, 1.5, 0, 6.3); ctx.fill();
+    ctx.restore();
+  }
+  function bubbleAt(x, y, text) {
+    ctx.font = "600 13px 'Be Vietnam Pro', sans-serif"; ctx.textAlign = "center";
+    var w = Math.min(ctx.measureText(text).width + 20, 240), h = 26;
+    ctx.fillStyle = "#fff"; ctx.strokeStyle = "rgba(35,50,74,.25)"; ctx.lineWidth = 1.5; rr(ctx, x - w / 2, y - h, w, h, 10); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 5, y - 1); ctx.lineTo(x, y + 6); ctx.lineTo(x + 5, y - 1); ctx.closePath(); ctx.fill(); ctx.fillStyle = "#23324a"; ctx.fillText(text, x, y - 8, w - 12);
+  }
+  function nameTag(x, y, text, friend) {
+    ctx.font = "600 11px 'Be Vietnam Pro', sans-serif"; ctx.textAlign = "center";
+    var label = friend ? "♥ " + text : text, w = ctx.measureText(label).width + 12;
+    ctx.fillStyle = friend ? "rgba(214,58,110,.8)" : "rgba(35,50,74,.62)"; rr(ctx, x - w / 2, y - 13, w, 16, 8); ctx.fill(); ctx.fillStyle = "#fff"; ctx.fillText(label, x, y - 1);
+  }
+
+  // ---------- update ----------
+  function update(dt) {
+    clock += dt;
+    var ph = 0.5 + clock / 360; ph -= Math.floor(ph);
+    dark = 0.45 * Math.pow(Math.max(0, Math.sin(ph * 6.2832)), 1.5);
+    hourF = ((ph - 0.5) * 24 + 6 + 24) % 24;
+    elClock.textContent = dark < 0.08 ? "Ban ngày" : dark < 0.25 ? "Hoàng hôn" : "Ban đêm";
+    if (phoneOpen) { var hh = Math.floor(hourF), mm = Math.floor((hourF - hh) * 60); $("pTime").textContent = (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm; }
+    if (introOpen || ptgIntroOpen) return;
+
+    var ix = 0, iy = 0;
+    if (!uiOpen() && !travelLock) {
+      if (keys.a || keys.arrowleft) ix -= 1; if (keys.d || keys.arrowright) ix += 1;
+      if (keys.w || keys.arrowup) iy -= 1; if (keys.s || keys.arrowdown) iy += 1;
+      ix += touchMoveX; iy += touchMoveY;
+    }
+    if (ix || iy) { target = null; var l = Math.hypot(ix, iy); ix /= l; iy /= l; }
+    else if (target && !travelLock) { var dx = target.x - P.x, dy = target.y - P.y, d = Math.hypot(dx, dy); if (d < 8) target = null; else { ix = dx / d; iy = dy / d; } }
+    P.moving = false;
+    if (ix || iy) {
+      if (P.fish) { P.fish = null; toast("Bạn đã thu cần câu."); }
+      var moved = moveEnt(P, ix * 170 * dt, iy * 170 * dt);
+      if (moved) { P.moving = true; P.walk += dt * 11; stuck = 0; } else if (target) { stuck += dt; if (stuck > 0.4) target = null; }
+      if (Math.abs(ix) > 0.15) P.face = ix > 0 ? 1 : -1;
+    }
+    if (!travelLock) for (var ei = 0; ei < Z.exits.length; ei++) { var ex = Z.exits[ei]; if (inRect(P.x, P.y, ex.r)) { travel(ex.to, ex.x, ex.y); break; } }
+    if (P.swingT > 0) { P.swingT -= dt; if (!P.swingHit && P.swingT <= 0.2) { P.swingHit = true; doCatch(); } }
+    if (P.fish) {
+      P.fish.t += dt;
+      if (P.fish.phase === "wait" && P.fish.t > P.fish.biteAt) { P.fish.phase = "bite"; P.fish.t = 0; }
+      else if (P.fish.phase === "bite" && P.fish.t > 1.0) { P.fish = null; toast("Cá thoát mất rồi!"); }
+    }
+    if (P.bubble) { P.bubble.t -= dt; if (P.bubble.t <= 0) P.bubble = null; }
+    if (tapFx > 0) tapFx -= dt;
+
+    if (save.eq.pet) {
+      var tx = P.x - P.face * 36, ty = P.y + 6, pdx = tx - pet.x, pdy = ty - pet.y, pd = Math.hypot(pdx, pdy);
+      pet.moving = pd > 10; if (pd > 400) { pet.x = P.x; pet.y = P.y; }
+      if (pet.moving) { pet.x += pdx / pd * Math.min(190 * dt, pd); pet.y += pdy / pd * Math.min(190 * dt, pd); pet.walk += dt * 14; if (Math.abs(pdx) > 2) pet.face = pdx > 0 ? 1 : -1; }
+    }
+
+    npcs.forEach(function (n) {
+      if (n.zone !== Z.id) return;
+      n.wait -= dt; n.cool -= dt; n.bT -= dt; if (n.bT <= 0) n.bubble = null; n.moving = false;
+      if (!n.t && n.wait <= 0) { var tx2 = n.x + rand(-170, 170), ty2 = n.y + rand(-130, 130); if (!blocked(tx2, ty2) && waterD(tx2, ty2, 1.1) > 1) n.t = { x: tx2, y: ty2 }; n.wait = rand(1, 3); }
+      if (n.t) {
+        var ddx = n.t.x - n.x, ddy = n.t.y - n.y, dd = Math.hypot(ddx, ddy);
+        if (dd < 6) { n.t = null; n.wait = rand(2, 5); }
+        else { var mv = moveEnt(n, ddx / dd * 55 * dt, ddy / dd * 55 * dt); n.moving = mv; n.walk += dt * 9; n.face = ddx > 0 ? 1 : -1; if (!mv) n.t = null; }
+      }
+      if (Math.hypot(P.x - n.x, P.y - n.y) < 130 && n.cool <= 0) { n.bubble = save.friends[n.id] && Math.random() < 0.4 ? "Chào " + save.name + "!" : pick(n.lines); n.bT = 3.2; n.cool = 9; }
     });
-  });
 
-  $("emResetBtn").addEventListener("click", function () {
-    if (!editingPid) return;
-    if (!confirm("Bạn chắc chắn muốn đặt lại toàn bộ dữ liệu của người chơi này?")) return;
-    fbReq("/players/" + encodeURIComponent(editingPid), "PATCH", {
-      adminCmd: { ts: Date.now(), resetSave: true, note: "Dữ liệu của bạn đã được Admin đặt lại." }
-    }).then(function () {
-      toast("Đã gửi lệnh Reset Save!");
-      $("editModal").hidden = true;
-      setTimeout(loadAll, 800);
+    bugs.forEach(function (b) {
+      b.ph += dt * (b.t.shape === "butterfly" ? 9 : b.t.shape === "dragonfly" ? 30 : b.t.shape === "firefly" ? 4 : 4);
+      b.timer -= dt; if (b.timer <= 0) { b.ang += rand(-1.2, 1.2); b.timer = rand(0.6, 1.6); }
+      var sp = b.t.sp, d = Math.hypot(P.x - b.x, P.y - b.y);
+      if (d < 110) { b.ang = Math.atan2(b.y - P.y, b.x - P.x) + rand(-0.3, 0.3); sp *= 2.2; }
+      var nx = b.x + Math.cos(b.ang) * sp * dt, ny = b.y + Math.sin(b.ang) * sp * dt;
+      if (!b.t.fly && Z.water && waterD(nx, ny, 1.05) < 1) { b.ang += 2.5; nx = b.x; ny = b.y; }
+      b.x = nx; b.y = ny;
+      if (b.x < 40 || b.x > Z.w - 40) { b.ang = Math.PI - b.ang; b.x = clamp(b.x, 40, Z.w - 40); }
+      if (b.y < 80 || b.y > Z.h - 40) { b.ang = -b.ang; b.y = clamp(b.y, 80, Z.h - 40); }
+      b.z = b.t.fly ? 24 + Math.sin(b.ph * 0.4) * 7 : 0;
     });
-  });
+    while (bugs.length < Z.bugN) spawnBug();
+    if (Z.picks) Z.pickState.forEach(function (p) { if (p.t > 0) { p.t -= dt; if (p.t <= 0) placePick(p); } });
 
-  $("refreshBtn").addEventListener("click", function () {
-    loadAll();
-    toast("Đã làm mới dữ liệu!");
-  });
+    for (var i = parts.length - 1; i >= 0; i--) { var p = parts[i]; p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.95; p.vy = p.vy * 0.95 + 90 * dt; if (p.life <= 0) parts.splice(i, 1); }
+    for (var j = pops.length - 1; j >= 0; j--) { pops[j].life -= dt; pops[j].y -= 28 * dt; if (pops[j].life <= 0) pops.splice(j, 1); }
 
-  loadAll();
-  setInterval(loadAll, 8000);
+    var c = ctxAction();
+    elActLabel.textContent = LABEL[c]; elAct.classList.toggle("reel", c === "reel"); elActKey.textContent = c === "reel" ? "Nhanh lên!" : "Space";
+  }
+
+  // ---------- draw ----------
+  function draw(now) {
+    var t = now / 1000, vw = W / S, vh = H / S;
+    camX = clamp(P.x - vw / 2, 0, Math.max(0, Z.w - vw)); camY = clamp(P.y - 20 - vh / 2, 0, Math.max(0, Z.h - vh));
+    offX = vw > Z.w ? (vw - Z.w) / 2 : 0; offY = vh > Z.h ? (vh - Z.h) / 2 : 0;
+    ctx.setTransform(dpr * S, 0, 0, dpr * S, 0, 0);
+    ctx.fillStyle = Z.id === "forest" ? "#3f8a5c" : Z.id === "beach" ? "#f2dc9a" : "#86cf8e"; ctx.fillRect(0, 0, vw, vh);
+    ctx.translate(-camX + offX, -camY + offY);
+    ctx.drawImage(Z.bg, 0, 0);
+    if (Z.water) {
+      var w = Z.water; ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 2;
+      for (var i = 0; i < 3; i++) { var k = (t * 0.25 + i / 3) % 1; ell(ctx, w.cx + 40, w.cy + 10, w.rx * (0.3 + k * 0.5), w.ry * (0.3 + k * 0.5)); ctx.globalAlpha = 1 - k; ctx.stroke(); }
+      ctx.globalAlpha = 1;
+      if (Z.id === "beach") { ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 5; ell(ctx, w.cx - Math.sin(t * 1.2) * 8, w.cy, w.rx + 6 + Math.sin(t * 1.2) * 8, w.ry + 6); ctx.stroke(); }
+    }
+    if (tapFx > 0) { ctx.strokeStyle = "rgba(255,255,255,.9)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(tapPos.x, tapPos.y, 8 + (0.6 - tapFx) * 30, 0, 6.3); ctx.globalAlpha = tapFx / 0.6; ctx.stroke(); ctx.globalAlpha = 1; }
+
+    var list = [];
+    Z.trees.forEach(function (tr) { list.push({ y: tr.y, f: function () { drawTree(tr); } }); });
+    Z.statics.forEach(function (s) { list.push({ y: s.y, f: function () { s.f(t); } }); });
+    Z.lamps.forEach(function (l) { list.push({ y: l[1], f: function () { drawLamp(l); } }); });
+    if (Z.picks) Z.pickState.forEach(function (p) { if (p.t <= 0) list.push({ y: p.y, f: function () { if (Z.picks.kind === "mushroom") drawMushroom(p.x, p.y, p.k.c, 1); else drawShell(p.x, p.y, p.k.c); } }); });
+    bugs.forEach(function (b) { list.push({ y: b.y + 1, f: function () { drawBug(b); } }); });
+    npcs.forEach(function (n) { if (n.zone === Z.id) list.push({ y: n.y, f: function () { drawAvatar({ x: n.x, y: n.y, face: n.face, walk: n.walk, moving: n.moving, shirt: n.shirt, hair: n.hair, hat: null, swingT: 0 }); } }); });
+    var nowMs = Date.now();
+    Object.keys(remotePlayers).forEach(function (rpid) {
+      if (rpid === save.pid) return;
+      var rp = remotePlayers[rpid];
+      if (!rp || rp.zone !== Z.id || (nowMs - (rp.updatedAt || 0)) > 15000) return;
+      list.push({ y: rp.y, f: function () { drawAvatar({ x: rp.x, y: rp.y, face: rp.face || 1, walk: 0, moving: false, shirt: rp.shirt || "#5ab0ff", hair: "#3a2e39", hat: rp.hat || null, swingT: 0 }); } });
+    });
+    if (save.eq.pet) list.push({ y: pet.y, f: drawPet });
+    var sh = byId(SHIRTS, save.eq.shirt);
+    list.push({ y: P.y, f: function () { drawAvatar({ x: P.x, y: P.y, face: P.face, walk: P.walk, moving: P.moving, shirt: sh ? sh.color : "#ff7a6b", hair: "#5b3a29", hat: save.eq.hat, swingT: P.swingT }); } });
+    list.sort(function (a, b) { return a.y - b.y; });
+    list.forEach(function (o) { o.f(); });
+
+    if (P.fish) {
+      var bp = bobberPos() || { x: P.x + P.face * 60, y: P.y }, bite = P.fish.phase === "bite", dip = bite ? 5 + Math.sin(t * 40) * 2 : Math.sin(t * 3) * 1.5;
+      ctx.strokeStyle = "#8d5a3b"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(P.x + P.face * 10, P.y - 24); ctx.lineTo(P.x + P.face * 30, P.y - 52); ctx.stroke();
+      ctx.strokeStyle = "rgba(35,50,74,.55)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(P.x + P.face * 30, P.y - 52); ctx.quadraticCurveTo((P.x + bp.x) / 2, Math.min(P.y, bp.y) - 30, bp.x, bp.y + dip); ctx.stroke();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(bp.x, bp.y + dip, 5, 0, 6.3); ctx.fill(); ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.arc(bp.x, bp.y + dip - 2, 5, Math.PI, 0); ctx.fill();
+      if (bite) { ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(bp.x, bp.y, 10 + (t * 30) % 14, 0, 6.3); ctx.stroke();
+        var hop = Math.abs(Math.sin(t * 12)) * 4; ctx.fillStyle = "#e63946"; ctx.beginPath(); ctx.arc(P.x, P.y - 78 - hop, 13, 0, 6.3); ctx.fill(); ctx.fillStyle = "#fff"; ctx.font = "800 20px 'Baloo 2', sans-serif"; ctx.textAlign = "center"; ctx.fillText("!", P.x, P.y - 71 - hop); }
+    }
+    parts.forEach(function (p) { ctx.globalAlpha = clamp(p.life / p.max, 0, 1); ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, 2.6, 0, 6.3); ctx.fill(); });
+    ctx.globalAlpha = 1;
+    nameTag(P.x, P.y - 62, save.name, false);
+    npcs.forEach(function (n) { if (n.zone !== Z.id) return; nameTag(n.x, n.y - 62, n.name, !!save.friends[n.id]); if (n.bubble) bubbleAt(n.x, n.y - 72, n.bubble); });
+    Object.keys(remotePlayers).forEach(function (rpid) {
+      if (rpid === save.pid) return;
+      var rp = remotePlayers[rpid];
+      if (!rp || rp.zone !== Z.id || (nowMs - (rp.updatedAt || 0)) > 15000) return;
+      var isPf = !!(save.playerFriends && save.playerFriends[rpid]);
+      nameTag(rp.x, rp.y - 62, rp.name || "Người chơi", isPf);
+      if (rp.bubble) bubbleAt(rp.x, rp.y - 72, rp.bubble);
+    });
+    if (P.bubble) bubbleAt(P.x, P.y - 72, P.bubble.text);
+    ctx.font = "800 18px 'Baloo 2', sans-serif"; ctx.textAlign = "center";
+    pops.forEach(function (p) { ctx.globalAlpha = clamp(p.life, 0, 1); ctx.lineWidth = 4; ctx.strokeStyle = "#fff"; ctx.strokeText(p.t, p.x, p.y); ctx.fillStyle = p.c; ctx.fillText(p.t, p.x, p.y); });
+    ctx.globalAlpha = 1;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var dk = Z.id === "forest" ? Math.min(0.6, dark + 0.12) : dark;
+    if (dk > 0.01) {
+      ctx.fillStyle = "rgba(16,22,72," + dk.toFixed(3) + ")"; ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      var lights = Z.lamps.map(function (l) { return [l[0], l[1] - 58, 120, "255,220,130"]; });
+      if (Z.picks && Z.picks.kind === "mushroom") Z.pickState.forEach(function (p) { if (p.t <= 0 && p.k.n === "Nấm xanh") lights.push([p.x, p.y - 12, 70, "90,230,240"]); });
+      lights.forEach(function (L) {
+        var sx = (L[0] - camX + offX) * S, sy = (L[1] - camY + offY) * S, rad = L[2] * S;
+        var g = ctx.createRadialGradient(sx, sy, 0, sx, sy, rad); g.addColorStop(0, "rgba(" + L[3] + "," + Math.min(0.8, dk * 1.2).toFixed(3) + ")"); g.addColorStop(1, "rgba(" + L[3] + ",0)");
+        ctx.fillStyle = g; ctx.fillRect(sx - rad, sy - rad, rad * 2, rad * 2);
+      });
+      ctx.globalCompositeOperation = "source-over";
+    }
+  }
+
+  // ---------- Play Together style intro ----------
+  function initPtgIntro() {
+    var wrap = $("ptg-intro-wrap");
+    var splash = $("ptg-splash-studio");
+    var screen = $("ptg-intro-screen");
+    var loadingBox = $("ptgLoadingBox");
+    var loadingFill = $("ptgLoadingFill");
+    var loadingPercent = $("ptgLoadingPercent");
+    var startBtn = $("ptgStartBtn");
+    var tipText = $("ptgTipText");
+
+    var ptgTips = [
+      "💡 Mẹo: Hãy kết bạn với dân làng và khám phá 3 khu vực nhé!",
+      "🎣 Mẹo: Kéo cần câu ngay khi thấy dấu chấm than (!) trên đầu!",
+      "🦋 Mẹo: Bướm xanh và bọ cánh vàng bán được rất nhiều xu!",
+      "♻️ Mẹo: Dùng app Tái chế trong điện thoại để đổi điểm xanh lấy quà!"
+    ];
+    tipText.textContent = ptgTips[Math.floor(Math.random() * ptgTips.length)];
+
+    function startPtgLoading() {
+      var progress = 0;
+      var interval = setInterval(function () {
+        progress += Math.floor(Math.random() * 13) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+          setTimeout(function () {
+            loadingBox.style.display = "none";
+            tipText.style.display = "none";
+            startBtn.style.display = "block";
+          }, 260);
+        }
+        loadingFill.style.width = progress + "%";
+        loadingPercent.textContent = "Đang tải dữ liệu... " + progress + "%";
+      }, 130);
+    }
+
+    setTimeout(function () {
+      splash.style.opacity = "0";
+      splash.style.visibility = "hidden";
+      startPtgLoading();
+    }, 1500);
+
+    screen.addEventListener("click", function () {
+      if (startBtn.style.display !== "block" || !ptgIntroOpen) return;
+      screen.classList.add("hide");
+      setTimeout(function () {
+        wrap.hidden = true;
+        ptgIntroOpen = false;
+        startGameAfterIntro();
+      }, 520);
+    });
+  }
+
+  // ---------- intro ----------
+  var STEPS = [
+    ["Làng Vui Vẻ", "Một ngày mới bắt đầu ở ngôi làng nhỏ bên mặt hồ."],
+    ["Chào mừng người mới!", "Bướm bay khắp vườn, cá cắn câu ngoài ao, và dân làng đang chờ làm bạn với bạn."],
+    ["Còn nhiều nơi để khám phá", "Đi về phía đông để ra bãi biển, đi về phía nam để vào khu rừng. Điện thoại giúp bạn kết bạn, nhập code và tái chế đồ."],
+    ["Bạn tên là gì?", ""]
+  ];
+  var istep = 0, ireplay = false, iColor = "sh_coral", iName = "Bạn", ictx = $("ic").getContext("2d"), iRaf = 0;
+  function startIntro(replay) {
+    ireplay = !!replay; istep = 0; introOpen = true; keys = {}; target = null; iColor = save.eq.shirt; iName = save.name;
+    var it = $("intro"); it.hidden = false; it.classList.remove("out"); renderIntro(); cancelAnimationFrame(iRaf); iRaf = requestAnimationFrame(introFrame);
+  }
+  function endIntro(skip) {
+    if (!ireplay) { if (skip) { iName = save.name || "Bạn"; } save.name = iName.trim() || "Bạn"; if (!save.owned[iColor]) save.owned[iColor] = true; save.eq.shirt = iColor; save.intro = true; persist(); }
+    var it = $("intro"); it.classList.add("out"); setTimeout(function () { it.hidden = true; introOpen = false; cancelAnimationFrame(iRaf); hud(); if (!ireplay) { banner(ZONE_NAMES[Z.id]); toast("Chạm vào bản đồ hoặc dùng WASD để đi dạo. Mở Điện thoại ở góc phải."); } }, 600);
+  }
+  function renderIntro() {
+    var c = $("iCard"); c.innerHTML = ""; c.style.animation = "none"; void c.offsetWidth; c.style.animation = "";
+    var last = STEPS.length - 1, hasName = !ireplay;
+    var dots = el("div", "dots"); for (var i = 0; i < (hasName ? STEPS.length : STEPS.length - 1); i++) dots.appendChild(el("i", i === istep ? "on" : "")); c.appendChild(dots);
+    if (istep < last || !hasName) {
+      c.appendChild(el("h1", null, STEPS[istep][0])); c.appendChild(el("p", null, STEPS[istep][1]));
+      var b = el("button", "go", istep >= (hasName ? last : last - 1) ? "Quay lại làng" : "Tiếp"); b.type = "button";
+      b.addEventListener("click", function () { if (istep >= (hasName ? last : last - 1)) endIntro(false); else { istep++; renderIntro(); } });
+      if (istep >= last - 1 && !hasName) b.textContent = "Quay lại làng";
+      c.appendChild(b);
+    } else {
+      c.appendChild(el("h1", null, STEPS[last][0]));
+      var inp = el("input", "inp"); inp.type = "text"; inp.maxLength = 12; inp.value = iName; inp.id = "introName"; inp.setAttribute("aria-label", "Tên của bạn");
+      inp.addEventListener("input", function () { iName = inp.value; }); c.appendChild(inp);
+      c.appendChild(el("span", "lbl", "Chọn màu áo đầu tiên"));
+      var sw = el("div", "swatches");
+      ["sh_coral", "sh_sky", "sh_mint", "sh_sun", "sh_pink"].forEach(function (id) {
+        var s = byId(SHIRTS, id), b = el("button", "sw"); b.type = "button"; b.style.background = s.color; b.setAttribute("aria-label", s.name); b.setAttribute("aria-pressed", iColor === id ? "true" : "false");
+        b.addEventListener("click", function () { iColor = id; Array.prototype.forEach.call(sw.children, function (x) { x.setAttribute("aria-pressed", "false"); }); b.setAttribute("aria-pressed", "true"); }); sw.appendChild(b);
+      });
+      c.appendChild(sw);
+      var go = el("button", "go", "Vào làng"); go.type = "button"; go.addEventListener("click", function () { iName = inp.value; endIntro(false); }); c.appendChild(go);
+    }
+  }
+  $("iSkip").addEventListener("click", function () { endIntro(true); });
+  function introFrame(now) {
+    if (!introOpen) return;
+    var t = now / 1000, c = ictx, w = W, h = H;
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var sky = c.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, "#7ec8ff"); sky.addColorStop(0.6, "#ffe9c2"); sky.addColorStop(1, "#ffd1a1");
+    c.fillStyle = sky; c.fillRect(0, 0, w, h);
+    var sx = w * (0.25 + istep * 0.15), sy = h * 0.22;
+    var sg = c.createRadialGradient(sx, sy, 0, sx, sy, 110); sg.addColorStop(0, "rgba(255,246,200,.95)"); sg.addColorStop(1, "rgba(255,246,200,0)"); c.fillStyle = sg; c.beginPath(); c.arc(sx, sy, 110, 0, 6.3); c.fill();
+    c.fillStyle = "#fff6c8"; c.beginPath(); c.arc(sx, sy, 34, 0, 6.3); c.fill();
+    c.fillStyle = "rgba(255,255,255,.85)";
+    for (var i = 0; i < 6; i++) { var cx = ((t * (10 + i * 4) + i * 260) % (w + 300)) - 150, cy = h * (0.1 + (i % 3) * 0.1); ell(c, cx, cy, 70, 20); c.fill(); ell(c, cx + 38, cy - 12, 42, 18); c.fill(); ell(c, cx - 36, cy - 6, 36, 15); c.fill(); }
+    var layers = [["#9fd8a8", 0.58, 12, 0.004, 0.3], ["#7cc48c", 0.68, 16, 0.006, 0.6], ["#5fb176", 0.8, 22, 0.008, 1.0]];
+    layers.forEach(function (L, li) {
+      c.fillStyle = L[0]; c.beginPath(); c.moveTo(0, h);
+      var shift = t * 14 * L[4] + istep * 90 * L[4];
+      for (var x = 0; x <= w; x += 10) c.lineTo(x, h * L[1] + Math.sin((x + shift) * L[3] * 3) * L[2] + Math.sin((x + shift) * L[3] * 7) * L[2] * 0.3);
+      c.lineTo(w, h); c.closePath(); c.fill();
+      if (li === 1) { for (var k = 0; k < 7; k++) { var hx = ((k * 220 - shift * 1.1) % (w + 260) + w + 260) % (w + 260) - 60, hy = h * L[1] + Math.sin((hx + shift) * L[3] * 3) * L[2] + 6; c.fillStyle = "#fff6e0"; c.fillRect(hx, hy - 26, 34, 26); c.fillStyle = k % 2 ? "#ff7a6b" : "#5a8fd6"; c.beginPath(); c.moveTo(hx - 5, hy - 26); c.lineTo(hx + 17, hy - 46); c.lineTo(hx + 39, hy - 26); c.closePath(); c.fill(); c.fillStyle = "#8d5a3b"; c.fillRect(hx + 13, hy - 14, 9, 14); } }
+    });
+    c.strokeStyle = "#4a4e69"; c.lineWidth = 2; c.lineCap = "round";
+    for (var b = 0; b < 4; b++) { var bx = ((t * 40 + b * 180) % (w + 200)) - 100, by = h * 0.3 + Math.sin(t * 1.5 + b) * 18 + b * 14, fl = Math.sin(t * 9 + b) * 6; c.beginPath(); c.moveTo(bx - 10, by + fl); c.quadraticCurveTo(bx - 4, by - 6, bx, by); c.quadraticCurveTo(bx + 4, by - 6, bx + 10, by + fl); c.stroke(); }
+    var s = byId(SHIRTS, iColor);
+    c.save(); c.translate(w / 2, h * 0.5 + Math.sin(t * 2) * 4); var sc = Math.min(w, h) / 160; c.scale(sc, sc);
+    withCtx(c, function () { drawAvatar({ x: 0, y: 0, face: 1, walk: t * 8, moving: istep < 3, shirt: s ? s.color : "#ff7a6b", hair: "#5b3a29", hat: null, swingT: 0 }); }); c.restore();
+    iRaf = requestAnimationFrame(introFrame);
+  }
+
+  // ---------- boot ----------
+  var last = performance.now();
+  document.addEventListener("visibilitychange", function () { last = performance.now(); if (document.hidden) { touchMoveX = 0; touchMoveY = 0; target = null; } });
+  function frame(now) {
+    if (document.hidden) { last = now; requestAnimationFrame(frame); return; }
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    update(dt); draw(now); requestAnimationFrame(frame);
+  }
+  resize();
+  enterZone("village", 900, 640);
+  hud();
+  initFirebase();
+  initPtgIntro();
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
